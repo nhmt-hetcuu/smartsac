@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ⚡ SmartSac — Hệ Thống Trạm Sạc Xe Điện Thông Minh
 
 **SmartSac** là hệ thống giám sát và điều khiển trạm sạc xe điện thông minh, giải quyết các vấn đề an toàn phòng chống cháy nổ và tối ưu hóa chu trình sạc thông qua cảm biến thời gian thực, điều khiển từ xa và phân tích an toàn.
