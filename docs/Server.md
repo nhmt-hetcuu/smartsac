@@ -775,5 +775,4 @@ Yêu cầu máy chủ đã cài đặt sẵn Python 3.9+, MySQL Server, và Redi
    ```bash
    python -m Flask_Web.index
    ```
->>>>>>> c33c85add95660613ecc968467e618cd78c9a62f
    Server mặc định lắng nghe tại cổng `8888`.
