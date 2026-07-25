@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ⚡ SmartSac — Tài Liệu Kiến Trúc & Vận Hành Hệ Thống
 
 Tài liệu chi tiết về kiến trúc, cơ sở dữ liệu, các lớp bảo mật, cơ chế đồng bộ realtime và hướng dẫn vận hành hệ thống **SmartSac** (Ổ cắm sạc xe điện thông minh).
