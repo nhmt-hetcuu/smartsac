@@ -3,8 +3,9 @@
 **SmartSac** là hệ thống giám sát và điều khiển trạm sạc xe điện thông minh, giải quyết các vấn đề an toàn phòng chống cháy nổ và tối ưu hóa chu trình sạc thông qua cảm biến thời gian thực, điều khiển từ xa và phân tích an toàn.
 
 > 📖 **Tài liệu chi tiết:**
-> * [Hướng dẫn chi tiết Mã nguồn ESP32](docs/ESP32.md)
-> * [Kiến trúc & Vận hành Hệ thống Server](docs/Server.md)
+> * [Hướng dẫn chi tiết Mã nguồn ESP32](ESP32/ESP32_CODE_GUIDE.md)
+> * [Kiến trúc & Vận hành Hệ thống Server](Server/T%C3%80I_LI%E1%BB%86U_D%E1%BB%B0_%C3%81N.md)
+> * [Tài liệu API Hệ thống](https://hetcuu.com/smartsac/tailieu_api)
 
 ---
 
