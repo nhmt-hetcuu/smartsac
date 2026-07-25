@@ -190,3 +190,89 @@ Khi Server phát hiện rủi ro an toàn hệ thống và phản hồi lỗi:
 *   Toàn bộ màn hình 4 dòng của LCD sẽ in đè nội dung tin nhắn lỗi từ Server (đã được lọc sạch dấu tiếng Việt).
 *   Nội dung tin nhắn sẽ tự động xuống dòng và căn giữa trên 4 dòng LCD để người dùng dễ đọc nhất.
 *   Giao diện lỗi này sẽ được duy trì và khóa lại cho đến khi người dùng can thiệp bằng cách nhấn phím cứng hoặc chỉnh cấu hình trên giao diện Web.
+
+---
+
+## 8. Sơ Đồ Nguyên Lý Hoạt Động (Operation Diagrams)
+
+### A. Sơ đồ khối hệ thống (System Block Diagram)
+
+```mermaid
+graph TD
+    subgraph ESP32 [Vi điều khiển ESP32]
+        Config[ConfigModule - Preferences]
+        Setup[SetupModule - Khởi tạo]
+        Control[ControlModule - Logic sạc]
+        LCD[LcdModule - Hiển thị]
+        Web[WebModule - Local Web Server]
+        TG[TelegramModule - Bot điều khiển]
+        Cloud[CloudModule - Sync Server]
+    end
+
+    subgraph Inputs [Cảm biến & Đầu vào]
+        DS18B20[DS18B20 - Nhiệt độ sạc] -->|OneWire/GPIO 5| Setup
+        MLX90614[MLX90614 - Nhiệt độ cell pin] -->|I2C/GPIO 7,8| Setup
+        DHT21[DHT21 - Nhiệt/Ẩm môi trường] -->|GPIO 4| Setup
+        PZEM[PZEM-004T - Đo điện năng] -->|UART/GPIO 16,17| Setup
+        RTC[RTC DS3231 - Thời gian thực] -->|I2C/GPIO 12,13| Setup
+        BTN3[Nút nhấn BTN3 - Sạc/Dừng] -->|GPIO 3| Setup
+        BTN_RST[Nút Reset cấu hình] -->|GPIO 38| Setup
+    end
+
+    subgraph Outputs [Đầu ra]
+        Control -->|GPIO 36| Relay[Relay điều khiển sạc]
+        LCD_Disp[LCD 2004] <---|I2C/GPIO 10,11| LCD
+    end
+
+    subgraph Networks [Kết nối mạng]
+        Web <-->|IP 192.168.4.1 / HTTP Auth| AP_Client[Thiết bị kết nối AP nội bộ]
+        TG <-->|Telegram Bot API| TG_Server[Telegram Server]
+        Cloud <-->|REST API JSON| Flask_Server[Cloud Flask/Redis Server]
+    end
+```
+
+### B. Lưu đồ thuật toán logic sạc (Charging Logic Flowchart)
+
+```mermaid
+flowchart TD
+    Start([Khởi động - Boot]) --> InitConfig[Đọc cấu hình chân & tính năng từ Preferences]
+    InitConfig --> InitPins[Khởi tạo chân IO & đối tượng cảm biến động]
+    
+    InitPins --> APCheck{Cấu hình AP?}
+    APCheck -->|Bật & Hạn giờ| APStart[Phát AP WiFi SmartSac] --> APTimer[Bắt đầu đếm AP Timeout]
+    APCheck -->|Luôn bật| APStartAlways[Phát AP WiFi liên tục]
+    APCheck -->|Tắt| NoAP[Tắt phát AP]
+
+    APStart & APStartAlways & NoAP --> Loop[Vòng lặp chính - Loop]
+
+    Loop --> ReadSensors[Đọc dữ liệu từ cảm biến bật]
+    ReadSensors --> CheckSensorFail{Cảm biến phản hồi lỗi/NaN?}
+    CheckSensorFail -->|Có| AutoDisable[Tắt cờ feat_ cảm biến & lưu Preferences] --> SetNA[Trạng thái hiển thị N/A]
+    CheckSensorFail -->|Không| NormalData[Nhận giá trị cảm biến bình thường]
+
+    SetNA & NormalData --> CheckAuth{Có Request Web?}
+    CheckAuth -->|Có| CheckInterface{Kết nối từ AP hay STA?}
+    CheckInterface -->|STA - Mạng Router| Err403[Trả về 403 Forbidden - Cách ly mạng]
+    CheckInterface -->|AP - Mạng nội bộ| BasicAuth[HTTP Basic Auth - Cho phép cấu hình]
+    CheckAuth -->|Không| SafetyCheck
+
+    BasicAuth & Err403 --> SafetyCheck{Kiểm tra an toàn:\nQuá nhiệt, ẩm, quá tải,\nhoặc Cloud báo lỗi 400?}
+    
+    SafetyCheck -->|Có lỗi| LockRelay[Ngắt Relay lập tức & Khóa lỗi lockout = true]
+    LockRelay --> TransError[removeAccents - Lọc sạch dấu tiếng Việt]
+    TransError --> DispError[LCD 2004 in đè lỗi an toàn] --> Loop
+
+    SafetyCheck -->|An toàn| StateCheck{Trạng thái sạc?}
+    StateCheck -->|DANG_SAC / DANG_DO| ChargeOn[Bật Relay vật lý]
+    StateCheck -->|SAC_CHO / DANG_HEN_GIO| ChargeWait[Tắt Relay, chờ đếm ngược]
+    StateCheck -->|DUNG / FULL| ChargeOff[Ngắt Relay vật lý]
+
+    ChargeOn & ChargeWait & ChargeOff --> UpdateLCD[Cập nhật LCD 2004]
+    UpdateLCD --> TGCheck[Xử lý lệnh Bot Telegram]
+    TGCheck --> CloudSync[Đồng bộ telemetry lên Flask Server]
+    
+    CloudSync --> APTimerCheck{Chế độ AP Timeout\n& Quá 5 phút?}
+    APTimerCheck -->|Có| APStop[Tắt phát AP - softAPdisconnect]
+    APTimerCheck -->|Không| Loop
+    APStop --> Loop
+```
