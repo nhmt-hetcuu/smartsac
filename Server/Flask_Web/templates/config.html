@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Sạc- Thông số</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #000000;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --bg: #ffffff;
+            --card-bg: #ffffff;
+            --text: #000000;
+            --text-light: #525252;
+            --border: #d8d8d8;
+            --nav-width: 260px;
+            --header-height: 70px;
+            --nav-height-mobile: 65px;
+            color-scheme: light;
+        }
+
+        [data-theme="dark"] {
+            --primary: #ffffff;
+            --bg: #000000;
+            --card-bg: #0d0d0d;
+            --text: #ffffff;
+            --text-light: #888888;
+            --border: #2a2a2a;
+            color-scheme: dark;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+
+        .hidden { display: none !important; }
+
+        .sidebar {
+            width: var(--nav-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover { background: var(--bg); color: var(--primary); }
+        .nav-item.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+        .nav-icon { width: 24px; text-align: center; }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .top-header {
+            height: var(--header-height);
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .device-selector-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .device-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            min-width: 180px;
+        }
+
+        .view-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            scroll-behavior: smooth;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { border: 1px solid var(--border); background: transparent; color: var(--text); }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            margin-top: 5px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-size: 0.95rem;
+        }
+
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        label { font-size: 0.9rem; font-weight: 600; color: var(--text-light); display: block; margin-top: 15px; margin-bottom: 2px; }
+
+        @media (max-width: 992px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: var(--nav-height-mobile);
+                padding: 0 5px;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+                border-right: none;
+                border-top: 1px solid var(--border);
+                z-index: 1000;
+                background: var(--card-bg);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+
+            .sidebar .brand { display: none !important; }
+
+            .sidebar .nav-links {
+                flex-direction: row;
+                width: 100%;
+                justify-content: space-around;
+                gap: 0;
+                margin: 0;
+            }
+
+            .nav-item {
+                flex-direction: column;
+                gap: 4px;
+                padding: 8px 0;
+                font-size: 0.65rem;
+                flex: 1;
+                text-align: center;
+                border-radius: 8px;
+                background: transparent !important;
+                color: var(--text-light) !important;
+                box-shadow: none !important;
+            }
+
+            .nav-item.active { color: var(--primary) !important; }
+            .nav-item.active .nav-icon { transform: translateY(-3px); color: var(--primary); }
+            .nav-icon { font-size: 1.3rem; transition: transform 0.2s; }
+
+            .main-content { height: 100vh; padding-bottom: calc(var(--nav-height-mobile) + 10px); }
+            .top-header { padding: 0 15px; }
+            .view-container { padding: 15px; }
+            .device-selector { min-width: 120px; font-size: 0.9rem; padding: 6px 10px; }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .btn { padding: 10px; font-size: 0.85rem; }
+        }
+
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            color: white;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #FFF;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ── Minimalist Monochrome overrides ── */
+        .card { border-radius: 0 !important; box-shadow: none !important; border: 1px solid var(--border); }
+        .btn { border-radius: 0 !important; box-shadow: none !important; }
+        .nav-item { border-radius: 0 !important; }
+        .nav-item.active { box-shadow: none !important; }
+        .station-menu, .station-item, .loader, input, select { border-radius: 0 !important; }
+        input:focus, select:focus { border-color: var(--text) !important; box-shadow: none !important; }
+        .brand { font-family: 'Playfair Display', Georgia, serif !important; font-weight: 900 !important; color: var(--text) !important; }
+        .sidebar { border-right: 2px solid var(--border) !important; }
+        .top-header { border-bottom: 2px solid var(--border) !important; }
+    </style>
+</head>
+<body>
+    <div id="loading-overlay" class="hidden">
+        <span class="loader"></span>
+        <p id="loading-text">Đang xử lý...</p>
+    </div>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-charging-station"></i> Smart Sạc
+        </div>
+        <nav class="nav-links">
+            <div class="nav-item" onclick="withLoading(() => { window.location.href = BASE + '/dashboard'; }, 'Đang mở bảng điều khiển...', true)">
+                <i class="fa-solid fa-chart-line nav-icon"></i> Dashboard
+            </div>
+            <div class="nav-item" onclick="withLoading(() => { window.location.href = BASE + '/config-ts'; }, 'Đang mở quản lý trạm...', true)">
+                <i class="fa-solid fa-server nav-icon"></i> Quản Lý Trạm
+            </div>
+            <div class="nav-item active">
+                <i class="fa-solid fa-sliders nav-icon"></i> Cấu Hình
+            </div>
+            <div class="nav-item" onclick="withLoading(() => { window.location.href = BASE + '/log'; }, 'Đang mở nhật ký...', true)">
+                <i class="fa-solid fa-clock-rotate-left nav-icon"></i> Nhật Ký
+            </div>
+            <div class="nav-item" onclick="withLoading(() => { window.location.href = BASE + '/user'; }, 'Đang mở người dùng...', true)">
+                <i class="fa-solid fa-user nav-icon"></i> User
+            </div>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="device-selector-group" style="cursor: pointer;" onclick="document.getElementById('device-select').click()">
+                <i class="fa-solid fa-server" style="color: var(--text-light)"></i>
+                <div class="device-selector">
+                    <span id="device-select-display" style="font-weight:600; color:var(--text); width: 100%;">Quản lý trạm sạc</span>
+                    <select id="device-select" style="position:absolute; opacity:0; width:0; height:0; pointer-events:none;">
+                        <option value="">Chọn trạm sạc...</option>
+                    </select>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button class="btn btn-outline" onclick="withLoading(() => { toggleTheme(); }, 'Đang đổi giao diện...')" style="width: 38px; height: 38px; padding: 0; justify-content: center;" title="Đổi giao diện"><i class="fa-solid fa-moon"></i></button>
+                <div style="width: 38px; height: 38px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;" id="user-avatar" title="Tài khoản">U</div>
+                <button class="btn btn-outline" onclick="withLoading(() => { window.location.href = BASE + '/user_logout'; }, 'Đang đăng xuất...', true)" style="width: 38px; height: 38px; padding: 0; justify-content: center; color: var(--danger); border-color: rgba(239, 68, 68, 0.3);" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </header>
+
+        <div class="view-container">
+            <div id="view-config" class="view">
+                <div class="grid-2">
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
+                            <h4 style="margin:0"><i class="fa-solid fa-robot"></i> 1. Cấu Hình AI Tự Động</h4>
+                            <span style="font-size:0.8rem; background:rgba(79, 70, 229, 0.1); color:var(--primary); padding:3px 8px; border-radius:4px; font-weight:600">Đơn giản</span>
+                        </div>
+
+                        <label style="margin-top:0">Loại ắc quy / Pin</label>
+                        <select id="cfg-type">
+                            <option value="lead">Ắc quy chì (Lead-Acid)</option>
+                            <option value="liion">Pin Lithium-ion</option>
+                            <option value="lfp">Pin LFP (LiFePO4)</option>
+                        </select>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px">
+                            <div><label>Điện áp bình (V)</label><select id="cfg-volts"><option value="">-- Chọn --</option><option value="12">12V</option><option value="24">24V</option><option value="48">48V</option><option value="60">60V</option><option value="72">72V</option><option value="84">84V</option><option value="96">96V</option></select></div>
+                            <div><label>Dung lượng (Ah)</label><input type="number" id="cfg-ah" placeholder="VD: 20"></div>
+                            <div><label>Output sạc (V)</label><input type="number" id="cfg-out-v" placeholder="VD: 60"></div>
+                            <div><label>Output sạc (A)</label><input type="number" id="cfg-out-a" placeholder="VD: 3.0"></div>
+                        </div>
+
+                        <button class="btn btn-primary" style="width:100%; margin-top:25px; justify-content:center; padding:12px" onclick="calculateAIConfig()">
+                            <i class="fa-solid fa-microchip"></i> Chạy AI Phân Tích
+                        </button>
+
+                        <div id="ai-result-card" style="display:none; margin-top:20px; border-top:1px solid var(--border); padding-top:20px">
+                            <h5 style="margin:0 0 10px 0; color:var(--success)">Kết Quả Đề Xuất:</h5>
+                            <ul style="font-size:0.9rem; padding-left:20px; line-height:1.6; color:var(--text-light)">
+                                <li>Thời gian sạc: <b id="res-time" style="color:var(--text)">--</b></li>
+                                <li>Ngưỡng đầy: <b id="res-watt" style="color:var(--text)">--</b></li>
+                                <li>Ngắt nhiệt độ: <b id="res-temp" style="color:var(--text)">--</b></li>
+                            </ul>
+                            <div id="res-context" style="font-size:0.82rem; color:var(--text-light); background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:10px; margin-top:10px; line-height:1.5;"></div>
+                            <button class="btn btn-outline" style="width:100%; margin-top:10px; color:var(--success); border-color:var(--success)" onclick="applyAIConfig()">
+                                <i class="fa-solid fa-arrow-right"></i> Áp dụng sang Cột Phải
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px">
+                            <h4 style="margin:0"><i class="fa-solid fa-sliders"></i> 2. Cấu Hình Thủ Công (Nâng cao)</h4>
+                            <span style="font-size:0.8rem; background:rgba(245, 158, 11, 0.1); color:var(--warning); padding:3px 8px; border-radius:4px; font-weight:600">Chi tiết</span>
+                        </div>
+
+                        <div style="height:400px; overflow-y:auto; padding-right:5px">
+                            <h5 style="margin:0 0 10px 0; color:var(--primary)">A. Chu Trình Sạc</h5>
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px">
+                                <div><label style="margin-top:0">Max Time (h)</label><input type="number" id="cfg-maxh" placeholder="VD: 8"></div>
+                                <div><label style="margin-top:0">Ngưỡng đầy (W)</label><input type="number" id="cfg-full" step="0.1" placeholder="VD: 10"></div>
+                                <div><label>Độ đầy (giây)</label><input type="number" id="cfg-measure" placeholder="VD: 300"></div>
+                                <div><label>Chờ sạc (phút)</label><input type="number" id="cfg-wait" placeholder="VD: 60"></div>
+                            </div>
+
+                            <h5 style="margin:20px 0 10px 0; color:var(--danger)">B. Bảo Vệ & An Toàn</h5>
+                            <label style="margin-top:0">Điện áp Input (V)</label>
+                            <input type="number" id="cfg-input-v" value="220" readonly style="cursor:not-allowed; opacity:0.7;">
+
+                            <label>Giới hạn Input (W) - 220V (max 20A ~ 4400W)</label>
+                            <input type="number" id="cfg-limit-p" min="0" max="4400" step="1" placeholder="0 - 4400">
+
+                            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px">
+                                <div><label>Nhiệt độ sạc tối đa</label><input type="number" id="cfg-t-ds" value="70" placeholder="VD: 70"></div>
+                                <div><label>Nhiệt độ pin tối đa</label><input type="number" id="cfg-t-mlx" placeholder="VD: 50"></div>
+                                <div><label>Nhiệt độ môi trường tối đa</label><input type="number" id="cfg-t-env" placeholder="VD: 50"></div>
+                                <div><label>Độ ẩm tối đa (%)</label><input type="number" id="cfg-h-max" placeholder="VD: 80"></div>
+                            </div>
+                        </div>
+
+                        <button class="btn btn-primary" style="width:100%; margin-top:20px; justify-content:center; padding:12px" onclick="saveManualConfig()">
+                            <i class="fa-solid fa-floppy-disk"></i> LƯU CẤU HÌNH XUỐNG MẠCH
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        var BASE = "{{ request.script_root }}";
+        let currentStationId = null;
+        let aiConfig = null;
+        let stations = [];
+
+        // Load stations on page load
+        async function loadStations() {
+            try {
+                const response = await fetch(BASE + '/api/config-ts');
+                const data = await response.json();
+                if (response.ok && data.data.length > 0) {
+                    stations = data.data;
+                    const select = document.getElementById('device-select');
+
+                    // Clear existing options
+                    select.innerHTML = '';
+
+                    // Add default option
+                    const defaultOpt = document.createElement('option');
+                    defaultOpt.value = '';
+                    defaultOpt.textContent = 'Chọn trạm sạc...';
+                    select.appendChild(defaultOpt);
+
+                    // Add station options
+                    stations.forEach(station => {
+                        const opt = document.createElement('option');
+                        opt.value = station.id;
+                        opt.textContent = station.name;
+                        if (station.is_active) opt.selected = true;
+                        select.appendChild(opt);
+                    });
+
+                    // Set event listener
+                    select.addEventListener('change', (e) => {
+                        const stationId = parseInt(e.target.value);
+                        const stationName = select.options[select.selectedIndex].text;
+                        if (stationId) {
+                            currentStationId = stationId;
+                            // Update display text
+                            document.getElementById('device-select-display').textContent = stationName;
+                            loadStationConfig(stationId);
+                        }
+                    });
+
+                    // Load first active or first station
+                    const activeStation = stations.find(s => s.is_active) || stations[0];
+                    if (activeStation) {
+                        select.value = activeStation.id;
+                        currentStationId = activeStation.id;
+                        document.getElementById('device-select-display').textContent = activeStation.name;
+                        loadStationConfig(activeStation.id);
+                    }
+                }
+            } catch (error) {
+                console.error('Lỗi load trạm:', error);
+            }
+        }
+
+        // Load config cho trạm được chọn
+        async function loadStationConfig(stationId) {
+            try {
+                const response = await fetch(BASE + `/api/config/${stationId}`);
+                const data = await response.json();
+                if (response.ok) {
+                    const cfg = data.data;
+                    // Chỉ điền dữ liệu nếu có, không điền giá trị mặc định
+                    if (cfg.battery_type) document.getElementById('cfg-type').value = cfg.battery_type;
+                    if (cfg.voltage) document.getElementById('cfg-volts').value = cfg.voltage;
+                    if (cfg.capacity_ah) document.getElementById('cfg-ah').value = cfg.capacity_ah;
+                    if (cfg.output_v) document.getElementById('cfg-out-v').value = cfg.output_v;
+                    if (cfg.output_a) document.getElementById('cfg-out-a').value = cfg.output_a;
+                    if (cfg.max_time_h) document.getElementById('cfg-maxh').value = cfg.max_time_h;
+                    if (cfg.threshold_w) document.getElementById('cfg-full').value = cfg.threshold_w;
+                    if (cfg.measure_interval) document.getElementById('cfg-measure').value = cfg.measure_interval;
+                    if (cfg.wait_time) document.getElementById('cfg-wait').value = cfg.wait_time;
+                    if (cfg.limit_input_w) document.getElementById('cfg-limit-p').value = cfg.limit_input_w;
+                    if (cfg.max_temp_charger) document.getElementById('cfg-t-ds').value = cfg.max_temp_charger;
+                    if (cfg.max_temp_battery) document.getElementById('cfg-t-mlx').value = cfg.max_temp_battery;
+                    if (cfg.max_temp_env) document.getElementById('cfg-t-env').value = cfg.max_temp_env;
+                    if (cfg.max_humidity) document.getElementById('cfg-h-max').value = cfg.max_humidity;
+                }
+            } catch (error) {
+                console.error('Lỗi load cấu hình:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', loadStations);
+
+        function resetLoadingState() {
+            const overlay = document.getElementById('loading-overlay');
+            if (!overlay) return;
+            overlay.classList.add('hidden');
+            overlay.classList.remove('show');
+            document.body.classList.remove('loading');
+            document.body.style.overflow = '';
+        }
+
+        window.addEventListener('load', resetLoadingState);
+        window.addEventListener('pageshow', resetLoadingState);
+
+        function showLoading(message) {
+            const overlay = document.getElementById('loading-overlay');
+            const text = document.getElementById('loading-text');
+            text.textContent = message || 'Đang xử lý...';
+            overlay.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
+
+        function withLoading(action, message, persist) {
+            showLoading(message);
+            window.setTimeout(function () {
+                try {
+                    action();
+                } finally {
+                    if (!persist) {
+                        window.setTimeout(hideLoading, 250);
+                    }
+                }
+            }, 120);
+        }
+
+        function toggleTheme() {
+            const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', next);
+            try { localStorage.setItem('smartsac_theme', next); } catch (_) {}
+        }
+        (function () {
+            try {
+                const saved = localStorage.getItem('smartsac_theme');
+                if (saved === 'dark') document.body.setAttribute('data-theme', 'dark');
+            } catch (_) {}
+        }());
+
+        function calculateAIConfig() {
+            if (!currentStationId) {
+                alert('Vui lòng chọn trạm sạc!');
+                return;
+            }
+
+            showLoading('Đang phân tích AI...');
+
+            const formData = new FormData();
+            formData.append('station_id', currentStationId);
+            formData.append('type', document.getElementById('cfg-type').value);
+            formData.append('ah', document.getElementById('cfg-ah').value);
+            formData.append('out_a', document.getElementById('cfg-out-a').value);
+
+            fetch(BASE + '/api/config/ai-analyze', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.status === 'success') {
+                    aiConfig = data.data;
+                    document.getElementById('res-time').innerText = aiConfig.hours + 'h';
+                    document.getElementById('res-watt').innerText = aiConfig.watts + 'W';
+                    document.getElementById('res-temp').innerText = aiConfig.temperature + '°C';
+
+                    const ahVal = parseFloat(document.getElementById('cfg-ah').value || '0') || 0;
+                    const outAVal = parseFloat(document.getElementById('cfg-out-a').value || '0') || 0;
+                    const batteryType = document.getElementById('cfg-type').value;
+
+                    let fitTitle = 'ĐÁNH GIÁ PHÙ HỢP: CHƯA ĐỦ DỮ LIỆU';
+                    let fitNote = 'Vui lòng nhập dung lượng Ah và dòng sạc A để đánh giá chính xác hơn.';
+
+                    if (ahVal > 0 && outAVal > 0) {
+                        const cRate = outAVal / ahVal;
+                        const leadLimit = 0.2;
+                        const liLimit = 0.5;
+                        const limit = batteryType === 'lead' ? leadLimit : liLimit;
+
+                        if (cRate <= limit * 0.6) {
+                            fitTitle = 'ĐÁNH GIÁ PHÙ HỢP: ỔN, AN TOÀN';
+                            fitNote = `Dòng sạc khoảng ${(cRate).toFixed(2)}C, phù hợp cho ${batteryType === 'lead' ? 'ắc quy chì' : 'pin lithium/LFP'}.`;
+                        } else if (cRate <= limit) {
+                            fitTitle = 'ĐÁNH GIÁ PHÙ HỢP: TẠM ỔN';
+                            fitNote = `Dòng sạc khoảng ${(cRate).toFixed(2)}C, vẫn trong ngưỡng khuyến nghị.`;
+                        } else {
+                            fitTitle = 'ĐÁNH GIÁ PHÙ HỢP: CHƯA ỔN';
+                            fitNote = `Dòng sạc khoảng ${(cRate).toFixed(2)}C vượt ngưỡng khuyến nghị (${limit.toFixed(2)}C). Nên giảm Output A.`;
+                        }
+                    }
+
+                    document.getElementById('res-context').innerHTML =
+                        `<b>${fitTitle}</b><br>${fitNote}`;
+
+                    document.getElementById('ai-result-card').style.display = 'block';
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                alert('❌ Lỗi: ' + error.message);
+            });
+        }
+
+        function applyAIConfig() {
+            if (!aiConfig) return;
+            document.getElementById('cfg-maxh').value = aiConfig.hours;
+            document.getElementById('cfg-full').value = aiConfig.watts;
+            document.getElementById('cfg-t-mlx').value = aiConfig.temperature;
+            document.getElementById('cfg-t-env').value = aiConfig.temp_env || 50;
+            document.getElementById('cfg-h-max').value = aiConfig.humidity || 80;
+            alert('Đã điền thông số vào cột Thủ Công.');
+        }
+
+        function saveManualConfig() {
+            if (!currentStationId) {
+                alert('Vui lòng chọn trạm sạc!');
+                return;
+            }
+
+            showLoading('Đang lưu cấu hình...');
+
+            const formData = new FormData();
+            const limitInputEl = document.getElementById('cfg-limit-p');
+            const rawLimitInput = parseFloat(limitInputEl.value || '0');
+            const safeLimitInput = Number.isFinite(rawLimitInput) ? Math.min(Math.max(rawLimitInput, 0), 4400) : 0;
+            if (Number.isFinite(rawLimitInput) && rawLimitInput !== safeLimitInput) {
+                alert('Giới hạn Input chỉ cho phép từ 0 đến 4400W (220V x 20A). Hệ thống đã tự điều chỉnh về ngưỡng hợp lệ.');
+            }
+            limitInputEl.value = safeLimitInput;
+
+            formData.append('station_id', currentStationId);
+            formData.append('battery_type', document.getElementById('cfg-type').value);
+            formData.append('voltage', document.getElementById('cfg-volts').value);
+            formData.append('ah', document.getElementById('cfg-ah').value);
+            formData.append('output_v', document.getElementById('cfg-out-v').value);
+            formData.append('output_a', document.getElementById('cfg-out-a').value);
+            formData.append('max_time_h', document.getElementById('cfg-maxh').value);
+            formData.append('threshold_w', document.getElementById('cfg-full').value);
+            formData.append('measure_interval', document.getElementById('cfg-measure').value);
+            formData.append('wait_time', document.getElementById('cfg-wait').value);
+            formData.append('limit_input_w', String(Math.round(safeLimitInput)));
+            formData.append('max_temp_charger', document.getElementById('cfg-t-ds').value);
+            formData.append('max_temp_battery', document.getElementById('cfg-t-mlx').value);
+            formData.append('max_temp_env', document.getElementById('cfg-t-env').value);
+            formData.append('max_humidity', document.getElementById('cfg-h-max').value);
+
+            fetch(BASE + '/api/config/save', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.status === 'success') {
+                    alert('✅ ' + data.message);
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                alert('❌ Lỗi: ' + error.message);
+            });
+        }
+    </script>
+</body>
+</html>

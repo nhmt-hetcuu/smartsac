@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SmartSac — Offline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=JetBrains+Mono:wght@400;600&display=swap">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #000;
+            color: #fff;
+            font-family: 'JetBrains Mono', monospace;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .offline-brand {
+            position: fixed;
+            top: 20px;
+            left: 24px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: #444;
+            text-decoration: none;
+        }
+
+        .offline-eyebrow {
+            font-size: 0.66rem;
+            font-weight: 600;
+            letter-spacing: 0.28em;
+            text-transform: uppercase;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .offline-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(4rem, 18vw, 8rem);
+            font-weight: 900;
+            line-height: 0.96;
+            letter-spacing: -0.02em;
+            color: #fff;
+            margin-bottom: 28px;
+        }
+
+        .offline-rule {
+            border: none;
+            border-top: 4px solid #fff;
+            width: 100%;
+            max-width: 360px;
+            margin: 0 auto 28px;
+        }
+
+        .offline-msg {
+            font-size: 0.78rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            color: #777;
+            line-height: 1.75;
+            margin-bottom: 36px;
+            max-width: 300px;
+        }
+
+        .btn {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            background: #fff;
+            color: #000;
+            border: 2px solid #fff;
+            padding: 14px 36px;
+            cursor: pointer;
+            transition: background 0.08s, color 0.08s;
+        }
+        .btn:hover {
+            background: #000;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <p class="offline-eyebrow">Lỗi kết nối / Network Error</p>
+    <h1 class="offline-title">Không<br>Có Mạng</h1>
+    <hr class="offline-rule">
+    <p class="offline-msg">Hãy kiểm tra kết nối Wi-Fi hoặc 4G<br>rồi thử tải lại ứng dụng.</p>
+    <button class="btn" onclick="window.location.reload()">Thử lại →</button>
+</body>
+</html>

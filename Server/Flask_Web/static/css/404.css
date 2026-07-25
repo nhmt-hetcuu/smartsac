@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body, html {
+    width: 100vw;
+    min-height: 100vh;
+    background: #ffffff;
+    color: #000000;
+}
+
+.frem {
+    width: 100vw;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem 1.5rem;
+    background: #ffffff;
+}
+
+.frem h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(6rem, 22vw, 14rem);
+    font-weight: 900;
+    letter-spacing: -0.04em;
+    line-height: 0.92;
+    color: #000000;
+    text-shadow: none;
+    margin-bottom: 0.15em;
+}
+
+.img-404 {
+    max-width: 420px;
+    width: 62vw;
+    height: auto;
+    margin: 0.5rem 0;
+    display: block;
+    filter: grayscale(100%) contrast(1.1);
+    border: 2px solid #000;
+}
+
+.frem .msg {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(0.72rem, 2.2vw, 0.9rem);
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #525252;
+    margin-top: 1.2rem;
+    text-align: center;
+}
+
+.back-link {
+    display: inline-block;
+    margin-top: 28px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: #000;
+    text-decoration: none;
+    border-bottom: 2px solid #000;
+    padding-bottom: 2px;
+    transition: opacity 0.1s;
+}
+.back-link:hover { opacity: 0.5; }
+
+@media (max-width: 600px) {
+    .frem h1 { font-size: clamp(5rem, 28vw, 8rem); }
+    .img-404 { width: 78vw; max-width: 320px; }
+}

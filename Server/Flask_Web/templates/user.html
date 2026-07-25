@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Sạc - User</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #000000;
+            --danger: #ef4444;
+            --bg: #ffffff;
+            --card-bg: #ffffff;
+            --text: #000000;
+            --text-light: #525252;
+            --border: #d8d8d8;
+            --nav-width: 260px;
+            --header-height: 70px;
+            --nav-height-mobile: 65px;
+            color-scheme: light;
+        }
+
+        [data-theme="dark"] {
+            --primary: #ffffff;
+            --bg: #000000;
+            --card-bg: #0d0d0d;
+            --text: #ffffff;
+            --text-light: #888888;
+            --border: #2a2a2a;
+            color-scheme: dark;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+
+        .hidden { display: none !important; }
+
+        .sidebar {
+            width: var(--nav-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover { background: var(--bg); color: var(--primary); }
+
+        .nav-item.active {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .nav-icon { width: 24px; text-align: center; }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .top-header {
+            height: var(--header-height);
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .device-selector-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .device-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            min-width: 180px;
+        }
+
+        .view-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            scroll-behavior: smooth;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--primary); color: white; }
+        .btn-outline { border: 1px solid var(--border); background: transparent; color: var(--text); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .btn-danger:hover { background: var(--danger); color: white; }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            background: var(--bg);
+            color: var(--text);
+            margin-top: 5px;
+            outline: none;
+            transition: border-color 0.2s;
+            font-size: 0.95rem;
+        }
+
+        input:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1); }
+        label { font-size: 0.9rem; font-weight: 600; color: var(--text-light); display: block; margin-top: 15px; margin-bottom: 2px; }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: var(--nav-height-mobile);
+                padding: 0 5px;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+                border-right: none;
+                border-top: 1px solid var(--border);
+                z-index: 1000;
+                background: var(--card-bg);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+
+            .sidebar .brand { display: none !important; }
+
+            .sidebar .nav-links {
+                flex-direction: row;
+                width: 100%;
+                justify-content: space-around;
+                gap: 0;
+                margin: 0;
+            }
+
+            .nav-item {
+                flex-direction: column;
+                gap: 4px;
+                padding: 8px 0;
+                font-size: 0.65rem;
+                flex: 1;
+                text-align: center;
+                border-radius: 8px;
+                background: transparent !important;
+                color: var(--text-light) !important;
+                box-shadow: none !important;
+            }
+
+            .nav-item.active { color: var(--primary) !important; }
+            .nav-item.active .nav-icon { transform: translateY(-3px); color: var(--primary); }
+            .nav-icon { font-size: 1.3rem; transition: transform 0.2s; }
+
+            .main-content { height: 100vh; padding-bottom: calc(var(--nav-height-mobile) + 10px); }
+            .top-header { padding: 0 15px; }
+            .view-container { padding: 15px; }
+            .device-selector { min-width: 120px; font-size: 0.9rem; padding: 6px 10px; }
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 480px) {
+            .btn { padding: 10px; font-size: 0.85rem; }
+        }
+
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            color: white;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #fff;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ── Minimalist Monochrome overrides ── */
+        .card { border-radius: 0 !important; box-shadow: none !important; border: 1px solid var(--border); }
+        .btn { border-radius: 0 !important; box-shadow: none !important; }
+        .nav-item { border-radius: 0 !important; }
+        .nav-item.active { box-shadow: none !important; }
+        .station-menu, .station-item, .loader { border-radius: 0 !important; }
+        input, select { border-radius: 0 !important; }
+        input:focus { border-color: var(--text) !important; box-shadow: none !important; }
+        .brand { font-family: 'Playfair Display', Georgia, serif !important; font-weight: 900 !important; color: var(--text) !important; }
+        .sidebar { border-right: 2px solid var(--border) !important; }
+        .top-header { border-bottom: 2px solid var(--border) !important; }
+    </style>
+</head>
+<body>
+
+    <div id="loading-overlay" class="hidden">
+        <span class="loader"></span>
+        <p id="loading-text">Đang xử lý...</p>
+    </div>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-charging-station"></i> Smart Sạc
+        </div>
+        <nav class="nav-links">
+            <div class="nav-item" onclick="withLoading(() => { window.location.href = BASE + '/dashboard'; }, 'Đang mở bảng điều khiển...', true)">
+                <i class="fa-solid fa-chart-line nav-icon"></i> Dashboard
+            </div>
+            <div class="nav-item" onclick="withLoading(() => { window.location.href = BASE + '/config-ts'; }, 'Đang mở quản lý trạm...', true)">
+                <i class="fa-solid fa-server nav-icon"></i> Quản Lý Trạm
+            </div>
+            <div class="nav-item" onclick="withLoading(() => { window.location.href = BASE + '/config'; }, 'Đang mở cấu hình...', true)">
+                <i class="fa-solid fa-sliders nav-icon"></i> Cấu Hình
+            </div>
+            <div class="nav-item" onclick="withLoading(() => { window.location.href = BASE + '/log'; }, 'Đang mở nhật ký...', true)">
+                <i class="fa-solid fa-clock-rotate-left nav-icon"></i> Nhật Ký
+            </div>
+            <div class="nav-item active">
+                <i class="fa-solid fa-user nav-icon"></i> User
+            </div>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="device-selector-group">
+                <i class="fa-solid fa-server" style="color: var(--text-light)"></i>
+                <div class="device-selector">
+                    <span style="border:none; background:transparent; font-weight:600; color:var(--text); width: 100%; padding:0; margin:0; outline:none" id="device-select">
+                       Chọn Trạm
+                    </span>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button class="btn btn-outline" onclick="withLoading(() => { toggleTheme(); }, 'Đang đổi giao diện...')" style="width: 38px; height: 38px; padding: 0; justify-content: center;" title="Đổi giao diện"><i class="fa-solid fa-moon"></i></button>
+
+                <div style="width: 38px; height: 38px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center;" id="user-avatar" title="Tài khoản"><i class="fa-solid fa-user"></i></div>
+
+                <button class="btn btn-outline" onclick="withLoading(() => { window.location.href = BASE + '/user_logout'; }, 'Đang đăng xuất...', true)" style="width: 38px; height: 38px; padding: 0; justify-content: center; color: var(--danger); border-color: rgba(239, 68, 68, 0.3);" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </header>
+
+        <div class="view-container">
+            <div id="view-profile" class="view">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px">
+                    <h3><i class="fa-solid fa-user-shield"></i> Hồ Sơ & Bảo Mật</h3>
+                </div>
+
+                <div class="grid-2">
+                    <div class="card">
+                        <h4 style="margin-bottom:15px; margin-top:0;"><i class="fa-solid fa-bell"></i> API Thông Báo</h4>
+                        <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:15px;">Hệ thống sẽ gửi cảnh báo ngắt sạc, quá nhiệt qua Telegram.</p>
+
+                        <label style="margin-top:0">Telegram Bot Token</label>
+                        <input type="text" id="prof-tg-token" placeholder="VD: 123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11">
+
+                        <label>Telegram Chat ID</label>
+                        <input type="text" id="prof-tg-chatid" placeholder="VD: 987654321">
+
+                        <button class="btn btn-primary" style="width:100%; margin-top:25px; justify-content:center;" onclick="withLoading(() => { saveApiConfig(); }, 'Đang lưu cấu hình API...', true)">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Lưu Cấu Hình API
+                        </button>
+                    </div>
+
+                    <div class="card">
+                        <h4 style="margin-bottom:15px; margin-top:0;"><i class="fa-solid fa-lock"></i> Tài Khoản & Mật Khẩu</h4>
+
+                        <label style="margin-top:0">Địa chỉ Email liên hệ</label>
+                        <div>
+                            <input type="email" id="prof-email" readonly style="width:100%; cursor:not-allowed; opacity:0.85;">
+                        </div>
+
+                        <div style="margin: 20px 0; border-top: 1px dashed var(--border);"></div>
+
+                        <h5 style="margin:0 0 10px 0; color:var(--danger);"><i class="fa-solid fa-key"></i> Đổi Mật Khẩu</h5>
+
+                        <label style="margin-top:0">Mật khẩu hiện tại</label>
+                        <input type="password" id="prof-old-pass" placeholder="********">
+
+                        <label>Mật khẩu mới</label>
+                        <input type="password" id="prof-new-pass" placeholder="Mật khẩu từ 6-32 ký tự">
+
+                        <label>Xác nhận mật khẩu mới</label>
+                        <input type="password" id="prof-confirm-pass" placeholder="Nhập lại mật khẩu mới">
+
+                        <button class="btn btn-danger" style="width:100%; margin-top:25px; justify-content:center;" onclick="withLoading(() => { changePassword(); }, 'Đang đổi mật khẩu...', true)">
+                            <i class="fa-solid fa-shield-check"></i> Xác Nhận Đổi Mật Khẩu
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        var BASE = "{{ request.script_root }}";
+        async function loadHeaderStationName() {
+            const el = document.getElementById('device-select');
+            if (!el) return;
+            try {
+                const response = await fetch(BASE + '/api/config-ts');
+                const body = await response.json();
+                if (!response.ok || !Array.isArray(body.data) || body.data.length === 0) {
+                    el.textContent = 'Chưa có trạm';
+                    return;
+                }
+                const active = body.data.find((s) => s.is_active) || body.data[0];
+                el.textContent = active && active.name ? active.name : 'Chọn Trạm';
+            } catch (_) {
+                el.textContent = 'Chọn Trạm';
+            }
+        }
+
+        // Load user info when page loads
+        async function loadUserInfo() {
+            try {
+                const response = await fetch(BASE + '/user/info');
+                const data = await response.json();
+                if (response.ok) {
+                    document.getElementById('prof-email').value = data.email || '';
+                }
+            } catch (error) {
+                console.error('Lỗi khi load thông tin user:', error);
+            }
+        }
+
+        // Load header station + user info when page is ready
+        document.addEventListener('DOMContentLoaded', function () {
+            loadHeaderStationName();
+            loadUserInfo();
+        });
+
+        function resetLoadingState() {
+            const overlay = document.getElementById('loading-overlay');
+            if (!overlay) return;
+            overlay.classList.add('hidden');
+            overlay.classList.remove('show');
+            document.body.classList.remove('loading');
+            document.body.style.overflow = '';
+        }
+
+        window.addEventListener('load', resetLoadingState);
+        window.addEventListener('pageshow', resetLoadingState);
+
+        function showLoading(message) {
+            const overlay = document.getElementById('loading-overlay');
+            const text = document.getElementById('loading-text');
+            text.textContent = message || 'Đang xử lý...';
+            overlay.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
+
+        function withLoading(action, message, persist) {
+            showLoading(message);
+            window.setTimeout(function () {
+                try {
+                    action();
+                } finally {
+                    if (!persist) {
+                        window.setTimeout(hideLoading, 250);
+                    }
+                }
+            }, 120);
+        }
+
+        function toggleTheme() {
+            const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', next);
+            try { localStorage.setItem('smartsac_theme', next); } catch (_) {}
+        }
+        (function () {
+            try {
+                const saved = localStorage.getItem('smartsac_theme');
+                if (saved === 'dark') document.body.setAttribute('data-theme', 'dark');
+            } catch (_) {}
+        }());
+
+        async function saveApiConfig() {
+            const tgToken = document.getElementById('prof-tg-token').value;
+            const tgChatId = document.getElementById('prof-tg-chatid').value;
+
+            if (!tgToken && !tgChatId) {
+                hideLoading();
+                alert('Vui lòng nhập Telegram token hoặc chat id!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('tg_token', tgToken);
+            formData.append('tg_chatid', tgChatId);
+
+            try {
+                const response = await fetch(BASE + '/user/api-config', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                hideLoading();
+                if (response.ok) {
+                    alert('✅ ' + data.message);
+                    // Clear fields after success
+                    document.getElementById('prof-tg-token').value = '';
+                    document.getElementById('prof-tg-chatid').value = '';
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (error) {
+                hideLoading();
+                alert('❌ Lỗi khi gửi dữ liệu: ' + error.message);
+            }
+        }
+
+        async function changePassword() {
+            const oldPass = document.getElementById('prof-old-pass').value;
+            const newPass = document.getElementById('prof-new-pass').value;
+            const confirmPass = document.getElementById('prof-confirm-pass').value;
+
+            if (!oldPass || !newPass || !confirmPass) {
+                hideLoading();
+                alert('Vui lòng điền đầy đủ các trường!');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('old_pass', oldPass);
+            formData.append('new_pass', newPass);
+            formData.append('confirm_pass', confirmPass);
+
+            try {
+                const response = await fetch(BASE + '/user/change-password', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                hideLoading();
+                if (response.ok) {
+                    alert('✅ ' + data.message);
+                    // Clear fields after success
+                    document.getElementById('prof-old-pass').value = '';
+                    document.getElementById('prof-new-pass').value = '';
+                    document.getElementById('prof-confirm-pass').value = '';
+                } else {
+                    alert('❌ Lỗi: ' + data.message);
+                }
+            } catch (error) {
+                hideLoading();
+                alert('❌ Lỗi khi gửi dữ liệu: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>
+

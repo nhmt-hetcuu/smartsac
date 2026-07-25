@@ -1,0 +1,10 @@
+flask
+flask_login
+flask_admin
+flask_sqlalchemy
+sqlalchemy
+requests
+pymysql
+python-dotenv
+redis
+bcrypt

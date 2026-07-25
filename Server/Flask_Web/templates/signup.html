@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đăng Ký — SmartSac</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/signup.css') }}">
+    {% if turnstile_site_key %}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    {% endif %}
+    <style>
+        /* ── Legal Consent Block (Minimalist Monochrome) ── */
+        .legal-wrap {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .legal-text {
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 0.78rem;
+            color: var(--muted-fg);
+            line-height: 1.65;
+        }
+        .legal-link {
+            text-decoration: underline;
+            text-decoration-style: dashed;
+            text-decoration-thickness: 1.5px;
+            text-underline-offset: 3px;
+            color: inherit;
+            font-weight: 400;
+            transition: font-weight 0.08s;
+        }
+        .legal-link:hover {
+            text-decoration-style: solid;
+            text-decoration-thickness: 2px;
+            font-weight: 600;
+        }
+        /* Custom square checkbox */
+        .legal-cb-label {
+            flex-shrink: 0;
+            cursor: pointer;
+            display: flex;
+            align-items: flex-start;
+            margin-top: 2px;
+        }
+        .legal-cb-input {
+            position: absolute !important;
+            opacity: 0 !important;
+            width: 0 !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border: none !important;
+        }
+        .legal-cb-box {
+            display: inline-block;
+            width: 17px;
+            height: 17px;
+            border: 2px solid var(--border);
+            background: transparent;
+            border-radius: 0;
+            flex-shrink: 0;
+            position: relative;
+        }
+        .legal-cb-input:checked + .legal-cb-box::after {
+            content: '';
+            position: absolute;
+            left: 3px;
+            top: -1px;
+            width: 6px;
+            height: 11px;
+            border: 2.5px solid var(--fg);
+            border-top: none;
+            border-left: none;
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body>
+    {% if err_msg %}<script>alert("{{ err_msg }}");</script>{% endif %}
+
+    <nav class="mono-nav">
+        <a href="/" class="mono-nav-brand">⚡ SmartSac</a>
+        <a href="/" class="mono-nav-back">← Trang chủ</a>
+    </nav>
+
+    <div id="loading" class="hidden">
+        <div class="spinner"></div>
+        <p class="loading-text">Đang xử lý...</p>
+    </div>
+
+    <div id="view-auth" class="view">
+        <div class="auth-container">
+            <p class="auth-eyebrow">Tài khoản / Authentication</p>
+            <h1 class="auth-title">Đăng<br>Ký</h1>
+            <hr class="auth-rule">
+
+            <div class="auth-tabs">
+                <button class="tab-btn" type="button" onclick="window.location.href = BASE + '/login'">Đăng nhập</button>
+                <button class="tab-btn active" type="button">Đăng ký</button>
+            </div>
+
+            <form id="auth-form" method="POST" action="{{ url_for('user_register') }}">
+                <label for="input-email">Email</label>
+                <input type="email" id="input-email" name="email" required placeholder="email@example.com">
+
+                <label for="input-user">Tên đăng nhập</label>
+                <input type="text" id="input-user" name="username" required placeholder="Nhập tên đăng nhập">
+
+                <label for="input-pass">Mật khẩu</label>
+                <input type="password" id="input-pass" name="password" required placeholder="••••••••">
+
+                <!-- Legal consent -->
+                <div class="legal-wrap">
+                    <label class="legal-cb-label" for="agree-terms">
+                        <input type="checkbox" id="agree-terms" name="agree" required class="legal-cb-input">
+                        <span class="legal-cb-box"></span>
+                    </label>
+                    <p class="legal-text">Bằng việc tạo tài khoản, bạn đồng ý với
+                        <a href="{{ url_for('dieu_khoan') }}" class="legal-link">Điều khoản dịch vụ</a>
+                        và <a href="{{ url_for('chinh_sach') }}" class="legal-link">Chính sách bảo mật</a> của chúng tôi.</p>
+                </div>
+
+                {% if turnstile_site_key %}
+                <div class="turnstile-wrapper">
+                    <div class="cf-turnstile"
+                         data-sitekey="{{ turnstile_site_key }}"
+                         data-theme="light"></div>
+                </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary w-full">Tiếp tục →</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var BASE = "{{ request.script_root }}";
+        function resetLoadingState() {
+            const loading = document.getElementById('loading');
+            if (!loading) return;
+            loading.classList.remove('show');
+            loading.classList.add('hidden');
+            document.body.classList.remove('loading');
+            document.body.style.overflow = '';
+        }
+
+        window.addEventListener('load', () => {
+            resetLoadingState();
+            document.body.classList.add('loaded');
+        });
+
+        window.addEventListener('pageshow', () => { resetLoadingState(); });
+
+        function showLoading(text = 'Đang xử lý...') {
+            const loading = document.getElementById('loading');
+            const loadingText = document.querySelector('.loading-text');
+            if (loadingText) loadingText.textContent = text;
+            loading.classList.remove('hidden');
+            setTimeout(() => loading.classList.add('show'), 10);
+        }
+
+        document.getElementById('auth-form').addEventListener('submit', function (e) {
+            var tsWidget = document.querySelector('.cf-turnstile');
+            if (tsWidget) {
+                var tsInput = document.querySelector('[name="cf-turnstile-response"]');
+                if (!tsInput || !tsInput.value) {
+                    e.preventDefault();
+                    alert('Vui lòng hoàn thành xác minh bảo mật Cloudflare.');
+                    return;
+                }
+            }
+            showLoading('Đang đăng ký...');
+        });
+    </script>
+</body>
+</html>

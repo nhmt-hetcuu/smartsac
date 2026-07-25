@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 — Không Tìm Thấy</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/404.css') }}">
+    <meta name="robots" content="noindex, nofollow">
+</head>
+<body>
+    <main class="frem">
+        <h1>404</h1>
+        <img src="{{ url_for('static', filename='img/404.gif') }}" alt="404 - Không tìm thấy trang" class="img-404">
+        <p class="msg">Ô kìa! Trang này không tồn tại.</p>
+        <a href="{{ url_for('home') }}" class="back-link">← Về trang chủ</a>
+    </main>
+</body>
+</html>

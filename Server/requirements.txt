@@ -1,0 +1,10 @@
+flask
+flask_login
+flask_sqlalchemy
+sqlalchemy
+requests
+python-dotenv
+redis
+bcrypt
+waitress
+pymysql

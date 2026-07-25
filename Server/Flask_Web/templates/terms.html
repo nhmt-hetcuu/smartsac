@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Điều Khoản Dịch Vụ — SmartSac</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: #fff;
+            color: #000;
+            font-family: 'Source Serif 4', Georgia, serif;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        /* ── NAV ── */
+        .mono-nav {
+            border-bottom: 2px solid #000;
+            padding: 16px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mono-nav-brand {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #000;
+        }
+        .mono-nav-back {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #000;
+            border-bottom: 1.5px solid #000;
+            padding-bottom: 1px;
+            transition: opacity 0.15s;
+        }
+        .mono-nav-back:hover { opacity: 0.55; }
+
+        /* ── CONTAINER ── */
+        .mono-container {
+            max-width: 780px;
+            margin: 0 auto;
+            padding: 72px 48px 120px;
+        }
+
+        /* ── HEADER ── */
+        .mono-eyebrow {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: #6b6b6b;
+            margin-bottom: 24px;
+        }
+        .mono-title {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: clamp(3.2rem, 9vw, 6rem);
+            font-weight: 900;
+            line-height: 1.04;
+            letter-spacing: -0.02em;
+            margin-bottom: 28px;
+        }
+        .mono-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.73rem;
+            color: #6b6b6b;
+            letter-spacing: 0.08em;
+            margin-bottom: 52px;
+        }
+
+        hr.mono-rule {
+            border: none;
+            border-top: 2px solid #000;
+            margin: 48px 0;
+        }
+        hr.mono-rule-thin {
+            border: none;
+            border-top: 1px solid #d8d8d8;
+            margin: 36px 0;
+        }
+
+        /* ── SECTIONS ── */
+        .mono-section { margin-bottom: 8px; }
+        .mono-section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.24em;
+            text-transform: uppercase;
+            color: #6b6b6b;
+            margin-bottom: 10px;
+        }
+        h2.mono-h2 {
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.22;
+            margin-bottom: 18px;
+        }
+        p.mono-p { margin-bottom: 16px; color: #111; }
+
+        ul.mono-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 16px;
+        }
+        ul.mono-list li {
+            padding-left: 1.6em;
+            margin-bottom: 8px;
+            position: relative;
+        }
+        ul.mono-list li::before {
+            content: '—';
+            position: absolute;
+            left: 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: #6b6b6b;
+        }
+
+        .mono-contact-note {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: #6b6b6b;
+            line-height: 1.65;
+        }
+        .mono-contact-note a {
+            color: #000;
+            text-decoration: underline;
+            text-decoration-style: dashed;
+            text-underline-offset: 3px;
+        }
+        .mono-contact-note a:hover {
+            text-decoration-style: solid;
+            font-weight: 600;
+        }
+
+        /* ── FOOTER ── */
+        .mono-footer {
+            border-top: 4px solid #000;
+            padding: 24px 48px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .mono-footer-copy {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            color: #6b6b6b;
+        }
+        .mono-footer-links { display: flex; gap: 28px; }
+        .mono-footer-links a {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            font-weight: 600;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            text-decoration: none;
+            color: #000;
+            border-bottom: 1.5px dashed #000;
+            padding-bottom: 1px;
+            transition: border-bottom-style 0.1s, border-bottom-width 0.1s;
+        }
+        .mono-footer-links a:hover {
+            border-bottom-style: solid;
+            border-bottom-width: 2px;
+        }
+
+        @media (max-width: 640px) {
+            .mono-nav { padding: 14px 20px; }
+            .mono-container { padding: 48px 20px 80px; }
+            .mono-footer { padding: 20px; flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="mono-nav">
+        <a href="/" class="mono-nav-brand">⚡ SmartSac</a>
+        <a href="/" class="mono-nav-back">← Trang chủ</a>
+    </nav>
+
+    <div class="mono-container">
+
+        <p class="mono-eyebrow">Pháp lý &nbsp;/&nbsp; Terms of Service</p>
+        <h1 class="mono-title">Điều Khoản<br>Dịch Vụ</h1>
+        <p class="mono-meta">Cập nhật lần cuối: Tháng 6, 2026 &nbsp;·&nbsp; Phiên bản 1.0 &nbsp;·&nbsp; SmartSac</p>
+
+        <hr class="mono-rule">
+
+        <div class="mono-section">
+            <p class="mono-section-label">01 — Tổng quan</p>
+            <h2 class="mono-h2">Chấp nhận điều khoản</h2>
+            <p class="mono-p">Bằng việc truy cập hoặc sử dụng nền tảng SmartSac, bạn đồng ý bị ràng buộc bởi các Điều Khoản Dịch Vụ này. Nếu bạn không đồng ý với bất kỳ phần nào, vui lòng không sử dụng dịch vụ của chúng tôi.</p>
+        </div>
+
+        <hr class="mono-rule-thin">
+
+        <div class="mono-section">
+            <p class="mono-section-label">02 — Tài khoản người dùng</p>
+            <h2 class="mono-h2">Quyền và nghĩa vụ</h2>
+            <p class="mono-p">Khi tạo tài khoản trên SmartSac, bạn có trách nhiệm:</p>
+            <ul class="mono-list">
+                <li>Bảo mật thông tin đăng nhập và không chia sẻ mật khẩu với bên thứ ba</li>
+                <li>Cung cấp thông tin chính xác, đầy đủ và cập nhật khi đăng ký</li>
+                <li>Chịu trách nhiệm về toàn bộ hoạt động xảy ra dưới tài khoản của bạn</li>
+                <li>Thông báo ngay cho chúng tôi nếu phát hiện bất kỳ vi phạm bảo mật nào</li>
+                <li>Tuân thủ tất cả luật và quy định hiện hành tại Việt Nam</li>
+            </ul>
+        </div>
+
+        <hr class="mono-rule-thin">
+
+        <div class="mono-section">
+            <p class="mono-section-label">03 — Sử dụng hợp lệ</p>
+            <h2 class="mono-h2">Hành vi bị cấm</h2>
+            <p class="mono-p">Bạn đồng ý không sử dụng dịch vụ để thực hiện các hành vi sau:</p>
+            <ul class="mono-list">
+                <li>Truy cập trái phép vào hệ thống, mạng hoặc dữ liệu</li>
+                <li>Phân phối mã độc, virus hoặc phần mềm gây hại</li>
+                <li>Thu thập dữ liệu của người dùng khác mà không có sự đồng ý</li>
+                <li>Gây gián đoạn hoặc làm hỏng cơ sở hạ tầng dịch vụ</li>
+            </ul>
+        </div>
+
+        <hr class="mono-rule-thin">
+
+        <div class="mono-section">
+            <p class="mono-section-label">04 — Giới hạn trách nhiệm</p>
+            <h2 class="mono-h2">Miễn trừ bảo đảm</h2>
+            <p class="mono-p">Dịch vụ được cung cấp theo nguyên tắc "nguyên trạng" (as-is). Chúng tôi không đảm bảo rằng dịch vụ sẽ không bị gián đoạn, không có lỗi, hoặc đáp ứng mọi yêu cầu cụ thể của bạn.</p>
+        </div>
+
+        <hr class="mono-rule-thin">
+
+        <div class="mono-section">
+            <p class="mono-section-label">05 — Thay đổi điều khoản</p>
+            <h2 class="mono-h2">Cập nhật và sửa đổi</h2>
+            <p class="mono-p">Chúng tôi có quyền sửa đổi các Điều Khoản này bất kỳ lúc nào. Những thay đổi quan trọng sẽ được thông báo qua email hoặc thông báo trên nền tảng. Việc tiếp tục sử dụng dịch vụ sau khi có thay đổi được xem là sự chấp nhận điều khoản mới.</p>
+        </div>
+
+        <hr class="mono-rule">
+
+        <p class="mono-contact-note">
+            Mọi thắc mắc về Điều Khoản Dịch Vụ, vui lòng liên hệ qua
+            <a href="/">trang chủ SmartSac</a> hoặc xem
+            <a href="{{ url_for('chinh_sach') }}">Chính sách bảo mật</a>.
+        </p>
+
+    </div>
+
+    <footer class="mono-footer">
+        <span class="mono-footer-copy">&copy; 2025–2026 SmartSac</span>
+        <nav class="mono-footer-links">
+            <a href="{{ url_for('dieu_khoan') }}">Điều khoản</a>
+            <a href="{{ url_for('chinh_sach') }}">Bảo mật</a>
+        </nav>
+    </footer>
+
+</body>
+</html>

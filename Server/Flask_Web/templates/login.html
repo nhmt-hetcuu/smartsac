@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đăng Nhập — SmartSac</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}">
+    {% if turnstile_site_key %}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    {% endif %}
+</head>
+<body>
+    {% if err_msg %}<script>alert("{{ err_msg }}");</script>{% endif %}
+
+    <nav class="mono-nav">
+        <a href="/" class="mono-nav-brand">⚡ SmartSac</a>
+        <a href="/" class="mono-nav-back">← Trang chủ</a>
+    </nav>
+
+    <div id="loading" class="hidden">
+        <div class="spinner"></div>
+        <p class="loading-text">Đang xử lý...</p>
+    </div>
+
+    <div id="view-auth" class="view">
+        <div class="auth-container">
+            <p class="auth-eyebrow">Tài khoản / Authentication</p>
+            <h1 class="auth-title">Đăng<br>Nhập</h1>
+            <hr class="auth-rule">
+
+            <div class="auth-tabs">
+                <button class="tab-btn active" type="button">Đăng nhập</button>
+                <button class="tab-btn" type="button" onclick="window.location.href = BASE + '/signup'">Đăng ký</button>
+            </div>
+
+            <form id="auth-form" method="POST" action="{{ url_for('user_login') }}">
+                <label for="input-user">Tên đăng nhập</label>
+                <input type="text" id="input-user" name="username" required placeholder="Nhập tên đăng nhập">
+
+                <label for="input-pass">Mật khẩu</label>
+                <input type="password" id="input-pass" name="password" required placeholder="••••••••">
+
+                <div style="text-align: right; margin-top: -10px; margin-bottom: 26px;">
+                    <a class="link" href="/forgot-password">Quên mật khẩu?</a>
+                </div>
+
+                {% if turnstile_site_key %}
+                <div class="turnstile-wrapper">
+                    <div class="cf-turnstile"
+                         data-sitekey="{{ turnstile_site_key }}"
+                         data-theme="light"></div>
+                </div>
+                {% endif %}
+
+                <button type="submit" class="btn btn-primary w-full">Tiếp tục →</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        var BASE = "{{ request.script_root }}";
+        function resetLoadingState() {
+            const loading = document.getElementById('loading');
+            if (!loading) return;
+            loading.classList.remove('show');
+            loading.classList.add('hidden');
+            document.body.classList.remove('loading');
+            document.body.style.overflow = '';
+        }
+
+        window.addEventListener('load', () => {
+            resetLoadingState();
+            document.body.classList.add('loaded');
+        });
+
+        window.addEventListener('pageshow', () => { resetLoadingState(); });
+
+        function showLoading(text = 'Đang xử lý...') {
+            const loading = document.getElementById('loading');
+            const loadingText = document.querySelector('.loading-text');
+            if (loadingText) loadingText.textContent = text;
+            loading.classList.remove('hidden');
+            setTimeout(() => loading.classList.add('show'), 10);
+        }
+
+        function hideLoading() {
+            const loading = document.getElementById('loading');
+            loading.classList.remove('show');
+            setTimeout(() => loading.classList.add('hidden'), 300);
+        }
+
+        document.getElementById('auth-form').addEventListener('submit', function (e) {
+            var tsWidget = document.querySelector('.cf-turnstile');
+            if (tsWidget) {
+                var tsInput = document.querySelector('[name="cf-turnstile-response"]');
+                if (!tsInput || !tsInput.value) {
+                    e.preventDefault();
+                    alert('Vui lòng hoàn thành xác minh bảo mật Cloudflare.');
+                    return;
+                }
+            }
+            showLoading('Đang đăng nhập...');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,106 @@
+# robots.txt — SmartSac (hetcuu.com/smartsac)
+# Cập nhật: 2026-06-20
+#
+# Chiến lược: AI crawlers (GPTBot, ClaudeBot, PerplexityBot, v.v.) được
+# phép truy cập trang công khai để cào nội dung (GEO — Generative Engine Optimization).
+# Các bot thông thường chỉ được truy cập trang chủ và tài nguyên tĩnh.
+# Route nội bộ / xác thực luôn bị chặn với mọi bot.
+
+# ── OpenAI / ChatGPT ───────────────────────────────────────────
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: OAI-SearchBot
+Allow: /$
+Allow: /static/
+Allow: /tailieu/api
+Allow: /dieu-khoan
+Allow: /chinh-sach
+Disallow: /
+
+# ── Perplexity ─────────────────────────────────────────────────
+User-agent: PerplexityBot
+Allow: /$
+Allow: /static/
+Allow: /tailieu/api
+Allow: /dieu-khoan
+Allow: /chinh-sach
+Disallow: /
+
+# ── Anthropic / Claude ─────────────────────────────────────────
+User-agent: ClaudeBot
+User-agent: anthropic-ai
+Allow: /$
+Allow: /static/
+Allow: /tailieu/api
+Allow: /dieu-khoan
+Allow: /chinh-sach
+Disallow: /
+
+# ── Google Gemini / AI Overview ────────────────────────────────
+User-agent: Google-Extended
+Allow: /$
+Allow: /static/
+Allow: /tailieu/api
+Allow: /dieu-khoan
+Allow: /chinh-sach
+Disallow: /
+
+# ── You.com ────────────────────────────────────────────────────
+User-agent: YouBot
+Allow: /$
+Allow: /static/
+Allow: /tailieu/api
+Allow: /dieu-khoan
+Allow: /chinh-sach
+Disallow: /
+
+# ── Cohere ─────────────────────────────────────────────────────
+User-agent: cohere-ai
+Allow: /$
+Allow: /static/
+Allow: /tailieu/api
+Disallow: /
+
+# ── ByteDance / Bytespider ─────────────────────────────────────
+User-agent: Bytespider
+Allow: /$
+Allow: /static/
+Allow: /tailieu/api
+Disallow: /
+
+# ── Common Crawl (dữ liệu huấn luyện LLM) ─────────────────────
+User-agent: CCBot
+Allow: /$
+Allow: /static/
+Allow: /tailieu/api
+Disallow: /
+
+# ── Các công cụ tìm kiếm thông thường ─────────────────────────
+User-agent: Googlebot
+User-agent: Bingbot
+Allow: /$
+Allow: /static/
+Disallow: /
+
+# ── Áp dụng cho mọi bot còn lại ───────────────────────────────
+User-agent: *
+Disallow: /
+Allow: /$
+Allow: /static/css/
+Allow: /static/js/
+Allow: /static/img/
+Allow: /static/manifest.webmanifest
+Allow: /sw.js
+Disallow: /admin
+Disallow: /check
+Disallow: /dashboard
+Disallow: /config
+Disallow: /config-ts
+Disallow: /log
+Disallow: /user
+Disallow: /tailieu/
+Disallow: /dieu-khoan
+Disallow: /chinh-sach
+
+# ── Sitemap ───────────────────────────────────────────────────
+Sitemap: https://hetcuu.com/smartsac/sitemap.xml

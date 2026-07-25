@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Smart Sạc - Dashboard</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <script defer src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=JetBrains+Mono:wght@400;600&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #000000;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #000000;
+            --bg: #ffffff;
+            --card-bg: #ffffff;
+            --text: #000000;
+            --text-light: #525252;
+            --border: #d8d8d8;
+            --nav-width: 260px;
+            --header-height: 70px;
+            --nav-height-mobile: 65px;
+            color-scheme: light;
+        }
+
+        [data-theme="dark"] {
+            --primary: #ffffff;
+            --info: #ffffff;
+            --bg: #000000;
+            --card-bg: #0d0d0d;
+            --text: #ffffff;
+            --text-light: #888888;
+            --border: #2a2a2a;
+            color-scheme: dark;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+
+        .hidden { display: none !important; }
+
+        .sidebar {
+            width: var(--nav-width);
+            background: var(--card-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+            z-index: 100;
+        }
+
+        .brand {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            letter-spacing: -0.5px;
+        }
+
+        .nav-links { flex: 1; display: flex; flex-direction: column; gap: 8px; }
+
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover { background: var(--bg); color: var(--primary); }
+        .nav-item.active { background: var(--primary); color: #fff; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3); }
+        .nav-icon { width: 24px; text-align: center; }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .top-header {
+            height: var(--header-height);
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 30px;
+        }
+
+        .device-selector-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+        }
+
+        .device-selector {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--bg);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            min-width: 220px;
+        }
+
+        .station-menu {
+            position: absolute;
+            top: calc(100% + 8px);
+            left: 28px;
+            min-width: 240px;
+            max-height: 260px;
+            overflow-y: auto;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+            z-index: 1200;
+            padding: 6px;
+        }
+
+        .station-item {
+            width: 100%;
+            text-align: left;
+            border: none;
+            background: transparent;
+            color: var(--text);
+            padding: 9px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .station-item:hover { background: var(--bg); }
+        .station-item.active { background: rgba(79, 70, 229, 0.12); color: var(--primary); }
+
+        .view-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            scroll-behavior: smooth;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            border: 1px solid var(--border);
+            margin-bottom: 24px;
+        }
+
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; margin-bottom: 24px; }
+        .grid-3 { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-bottom: 24px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 24px; }
+
+        .stat-card { position: relative; }
+        .stat-value { font-size: 2rem; font-weight: 700; }
+        .stat-label { font-size: 0.9rem; color: var(--text-light); }
+
+        .chart-container { position: relative; height: 320px; width: 100%; }
+
+        .status-big-icon {
+            font-size: 4.5rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+        }
+
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: var(--primary); color: #fff; }
+        .btn-outline { border: 1px solid var(--border); background: transparent; color: var(--text); }
+        .btn-danger { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+
+        .sensor-row { margin-top: 12px; }
+        .sensor-line { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.9rem; }
+        .bar-wrap { height: 8px; background: var(--bg); border-radius: 4px; overflow: hidden; }
+        .bar-inner { width: 0%; height: 100%; transition: width 0.4s; }
+
+        .small-text { color: var(--text-light); font-size: 0.85rem; }
+
+        @media (max-width: 1200px) {
+            .grid-4 { grid-template-columns: repeat(2, 1fr); }
+            .grid-3 { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: var(--nav-height-mobile);
+                padding: 0 5px;
+                flex-direction: row;
+                justify-content: space-around;
+                align-items: center;
+                border-right: none;
+                border-top: 1px solid var(--border);
+                z-index: 1000;
+                background: var(--card-bg);
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+
+            .sidebar .brand { display: none !important; }
+            .sidebar .nav-links {
+                flex-direction: row;
+                width: 100%;
+                justify-content: space-around;
+                gap: 0;
+                margin: 0;
+            }
+
+            .nav-item {
+                flex-direction: column;
+                gap: 4px;
+                padding: 8px 0;
+                font-size: 0.65rem;
+                flex: 1;
+                text-align: center;
+                border-radius: 8px;
+                background: transparent !important;
+                color: var(--text-light) !important;
+                box-shadow: none !important;
+            }
+
+            .nav-item.active { color: var(--primary) !important; }
+            .nav-item.active .nav-icon { transform: translateY(-3px); color: var(--primary); }
+            .nav-icon { font-size: 1.3rem; transition: transform 0.2s; }
+
+            .main-content { height: 100vh; padding-bottom: calc(var(--nav-height-mobile) + 10px); }
+            .top-header { padding: 0 15px; }
+            .view-container { padding: 15px; }
+            .device-selector { min-width: 140px; font-size: 0.9rem; padding: 6px 10px; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .grid-4 { grid-template-columns: repeat(2, 1fr); gap: 15px; }
+        }
+
+        @media (max-width: 480px) {
+            .grid-4 { grid-template-columns: 1fr; }
+            .chart-container { height: 250px; }
+            .btn { padding: 10px; font-size: 0.85rem; }
+        }
+
+        #conn-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            background: rgba(107,114,128,0.1);
+            color: var(--text-light);
+            transition: all 0.4s;
+        }
+        #conn-badge.online  { background: rgba(16,185,129,0.12); color: #10b981; }
+        #conn-badge.offline { background: rgba(239,68,68,0.12);  color: #ef4444; }
+        #conn-dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+
+        #toast-banner {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(80px);
+            background: #1f2937;
+            color: #fff;
+            padding: 12px 22px;
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.35s ease;
+            max-width: 90vw;
+            text-align: center;
+            pointer-events: none;
+        }
+        #toast-banner.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+        #toast-banner.error { background: #dc2626; }
+        #toast-banner.warn  { background: #d97706; }
+        #toast-banner.ok    { background: #059669; }
+
+        #loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            color: #fff;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 5px solid #fff;
+            border-bottom-color: transparent;
+            border-radius: 50%;
+            display: inline-block;
+            box-sizing: border-box;
+            animation: rotation 1s linear infinite;
+        }
+
+        @keyframes rotation {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ── Minimalist Monochrome overrides ── */
+        .card { border-radius: 0 !important; box-shadow: none !important; border: 1px solid var(--border); }
+        .btn { border-radius: 0 !important; box-shadow: none !important; }
+        .nav-item { border-radius: 0 !important; }
+        .nav-item.active { box-shadow: none !important; }
+        .device-selector, .station-menu, .station-item,
+        #conn-badge, #toast-banner, .bar-wrap, .loader { border-radius: 0 !important; }
+        .brand { font-family: 'Playfair Display', Georgia, serif !important; font-weight: 900 !important; color: var(--text) !important; }
+        .sidebar { border-right: 2px solid var(--border) !important; }
+        .top-header { border-bottom: 2px solid var(--border) !important; }
+        .station-menu { border: 2px solid var(--border) !important; box-shadow: none !important; }
+        #toast-banner { background: #000 !important; }
+        #toast-banner.error { background: #dc2626 !important; }
+        #toast-banner.warn  { background: #b45309 !important; }
+        #toast-banner.ok    { background: #047857 !important; }
+        .device-selector { border: 2px solid var(--border) !important; }
+        #conn-badge { background: transparent !important; border: 1px solid var(--border) !important; }
+        #conn-badge.online  { border-color: #10b981 !important; }
+        #conn-badge.offline { border-color: #ef4444 !important; }
+    </style>
+</head>
+<body>
+    <div id="toast-banner"></div>
+    <div id="loading-overlay" class="hidden">
+        <span class="loader"></span>
+        <p id="loading-text">Đang xử lý...</p>
+    </div>
+
+    <aside class="sidebar">
+        <div class="brand">
+            <i class="fa-solid fa-charging-station"></i> Smart Sạc
+        </div>
+        <nav class="nav-links">
+            <div class="nav-item active">
+                <i class="fa-solid fa-chart-line nav-icon"></i> Dashboard
+            </div>
+            <div class="nav-item" onclick="withLoading(() => { window.location.href = BASE + '/config-ts'; }, 'Đang mở quản lý trạm...', true)">
+                <i class="fa-solid fa-server nav-icon"></i> Quản Lý Trạm
+            </div>
+            <div class="nav-item" onclick="withLoading(() => { window.location.href = BASE + '/config'; }, 'Đang mở cấu hình...', true)">
+                <i class="fa-solid fa-sliders nav-icon"></i> Cấu Hình
+            </div>
+            <div class="nav-item" onclick="withLoading(() => { window.location.href = BASE + '/log'; }, 'Đang mở nhật ký...', true)">
+                <i class="fa-solid fa-clock-rotate-left nav-icon"></i> Nhật Ký
+            </div>
+            <div class="nav-item" onclick="withLoading(() => { window.location.href = BASE + '/user'; }, 'Đang mở người dùng...', true)">
+                <i class="fa-solid fa-user nav-icon"></i> User
+            </div>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        <header class="top-header">
+            <div class="device-selector-group">
+                <i class="fa-solid fa-server" style="color: var(--text-light)"></i>
+                <div class="device-selector" style="cursor:pointer" onclick="toggleStationMenu(event)">
+                    <span id="device-select" style="font-weight:600; color:var(--text); width: 100%;">Chọn trạm sạc...</span>
+                </div>
+                <div id="station-menu" class="station-menu hidden"></div>
+                <span id="conn-badge"><span id="conn-dot"></span><span id="conn-label">--</span></span>
+                <span id="last-update" style="font-size:0.75rem; color:var(--text-light)"></span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <button class="btn btn-outline" onclick="withLoading(() => { toggleTheme(); }, 'Đang đổi giao diện...')" style="width: 38px; height: 38px; padding: 0; justify-content: center;" title="Đổi giao diện"><i class="fa-solid fa-moon"></i></button>
+                <div style="width: 38px; height: 38px; background: var(--primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold;" id="user-avatar" title="Tài khoản">U</div>
+                <button class="btn btn-outline" onclick="withLoading(() => { window.location.href = BASE + '/user_logout'; }, 'Đang đăng xuất...', true)" style="width: 38px; height: 38px; padding: 0; justify-content: center; color: var(--danger); border-color: rgba(239, 68, 68, 0.3);" title="Đăng xuất"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+        </header>
+
+        <div class="view-container">
+            <div class="grid-4">
+                <div class="card stat-card">
+                    <span class="stat-label">CÔNG SUẤT</span>
+                    <br>
+                    <span class="stat-value" style="color: var(--primary)"><span id="val-p">0</span> <small style="font-size:1rem">W</small></span>
+                    <br>
+                    <span class="small-text"><span id="energy-caption">Điện đang sạc:</span> <b id="val-energy">0.000</b> kWh</span>
+                    <br>
+                    <span class="small-text">Công suất TB tháng: <b id="val-month-power">0.0</b> W</span>
+                    <br>
+                    <span class="small-text">Điện tích lũy tháng: <b id="val-month-energy">0.000</b> kWh</span>
+                </div>
+                <div class="card stat-card">
+                    <span class="stat-label">ĐIỆN ÁP</span>
+                    <br>
+                    <span class="stat-value" style="color: var(--success)"><span id="val-v">0</span> <small style="font-size:1rem">V</small></span>
+                </div>
+                <div class="card stat-card">
+                    <span class="stat-label">NHIỆT ĐỘ PIN /Ác Quy</span>
+                    <br>
+                    <span class="stat-value" style="color: var(--danger)"><span id="val-ds">0</span> <small style="font-size:1rem">°C</small></span>
+                </div>
+                <div class="card stat-card">
+                    <span class="stat-label">THỜI GIAN SẠC</span>
+                    <br>
+                    <span class="stat-value" style="color: var(--info)"><span id="val-time">0</span> <small style="font-size:1rem">phút</small></span>
+                    <br>
+                    <span class="small-text">Dự kiến: <b id="val-est">--</b> phút</span>
+                </div>
+            </div>
+
+            <div class="grid-3">
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:15px">
+                        <h4><i class="fa-solid fa-chart-area"></i> Phân Tích Hiệu Suất</h4>
+                        <span style="font-size:0.75rem; font-family:'JetBrains Mono',monospace; letter-spacing:0.1em; text-transform:uppercase; background:transparent; color:var(--text); border:1px solid var(--border); padding:2px 8px;">Live</span>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="mainChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fa-solid fa-power-off"></i> Điều Khiển Trạm</h4>
+                    <div style="text-align:center; margin-top:20px; margin-bottom:20px;">
+                        <i id="status-icon" class="fa-solid fa-circle-check status-big-icon"></i>
+                        <div class="small-text">Trạng thái hiện tại</div>
+                        <div id="status-text" style="font-size:1.4rem; font-weight:800; color:var(--primary)">SẴN SÀNG</div>
+                    </div>
+                    <div style="display:grid; gap:10px;">
+                        <button class="btn btn-primary" onclick="sendCommand('charge_now')"><i class="fa-solid fa-bolt"></i> Sạc Ngay</button>
+                        <button class="btn" style="background:var(--warning); color:#fff;" onclick="sendCommand('charge_wait')"><i class="fa-solid fa-clock"></i> Sạc Chờ</button>
+                        <button class="btn btn-danger" onclick="sendCommand('charge_stop')"><i class="fa-solid fa-power-off"></i> Dừng Khẩn Cấp</button>
+                        <button class="btn" style="background:#000;color:#fff;border:2px solid #000;margin-top:4px;" onclick="runDemo()" title="Chạy thử kịch bản demo / dữ liệu giả lập">
+                            <i class="fa-solid fa-flask-vial"></i> Demo
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <div class="card">
+                    <h4><i class="fa-solid fa-microchip"></i> Giám Sát Cảm Biến</h4>
+                    <div class="sensor-row">
+                        <div class="sensor-line">
+                            <span>Nhiệt độ sạc (DS)</span>
+                            <b id="val-ds-sensor">0°C</b>
+                        </div>
+                        <div class="bar-wrap"><div id="bar-ds" class="bar-inner" style="background:var(--danger)"></div></div>
+                    </div>
+                    <div class="sensor-row">
+                        <div class="sensor-line">
+                            <span>Nhiệt độ ắc quy (MLX)</span>
+                            <b id="val-mlx">0°C</b>
+                        </div>
+                        <div class="bar-wrap"><div id="bar-mlx" class="bar-inner" style="background:var(--warning)"></div></div>
+                    </div>
+                    <div class="sensor-row">
+                        <div class="sensor-line">
+                            <span>Nhiệt môi trường</span>
+                            <b id="val-env">--°C</b>
+                        </div>
+                        <div class="bar-wrap"><div id="bar-env" class="bar-inner" style="background:var(--success)"></div></div>
+                    </div>
+                    <div class="sensor-row">
+                        <div class="sensor-line">
+                            <span>Độ ẩm môi trường</span>
+                            <b id="val-hum">0%</b>
+                        </div>
+                        <div class="bar-wrap"><div id="bar-hum" class="bar-inner" style="background:var(--info)"></div></div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4><i class="fa-solid fa-robot"></i> AI Trợ Lý</h4>
+                    <div id="ai-msg" style="background:var(--bg); padding:15px; border:1px solid var(--border); min-height:120px; font-size:0.9rem; line-height:1.5;">
+                        Hệ thống AI đang giám sát. Nhấn nút bên dưới để phân tích nhanh cấu hình.
+                    </div>
+                    <button class="btn btn-outline" style="width:100%; margin-top:12px" onclick="analyzeAI()"><i class="fa-solid fa-wand-magic-sparkles"></i> Phân tích ngay</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        var BASE = "{{ request.script_root }}";
+        const MAX_POINTS = 30;
+        let stations = [];
+        let currentStationId = null;
+        let mainChart = null;
+        let _toastTimer = null;
+        let _consecutiveErrors = 0;
+        let _stationMenuBound = false;
+
+        /* ── Demo ── */
+        async function runDemo() {
+            if (!currentStationId) { showToast('Chọn trạm sạc trước khi chạy Demo', 'warn'); return; }
+            showToast('Đang gửi yêu cầu Demo...', 'warn');
+            try {
+                const fd = new FormData();
+                fd.append('station_id', currentStationId);
+                const r = await fetch(BASE + '/api/demo', { method: 'POST', body: fd });
+                const j = await r.json();
+                showToast(j.message || 'Demo đã chạy', j.status === 'success' ? 'ok' : 'error');
+            } catch(e) {
+                showToast('Lỗi kết nối khi gọi Demo', 'error');
+            }
+        }
+
+        const STATE_LABELS_VI = {
+            DANG_SAC: 'ĐANG SẠC',
+            DANG_DO: 'ĐANG ĐO',
+            SAC_CHO: 'SẠC CHỜ',
+            DUNG: 'DỪNG',
+            FULL: 'ĐẦY',
+            LOI: 'LỖI',
+            LOI_CAM_BIEN: 'LỖI CẢM BIẾN',
+            NGAT_NHIET: 'NGẮT NHIỆT',
+            NGAT_DO_AM: 'NGẮT ĐỘ ẨM',
+            NGAT_QUA_GIO: 'NGẮT QUÁ GIỜ',
+            NGAT_QUA_CONG_SUAT: 'NGẮT QUÁ CÔNG SUẤT',
+            MAT_KET_NOI: 'MẤT KẾT NỐI',
+            SAN_SANG: 'SẴN SÀNG'
+        };
+
+        /* ── Toast ── */
+        function showToast(msg, type, duration) {
+            const el = document.getElementById('toast-banner');
+            el.textContent = msg;
+            el.className = 'show ' + (type || 'warn');
+            if (_toastTimer) clearTimeout(_toastTimer);
+            _toastTimer = setTimeout(() => { el.className = ''; }, duration || 3500);
+        }
+
+        /* ── Connection badge ── */
+        function setConnBadge(state, labelText) {
+            document.getElementById('conn-badge').className = state;
+            document.getElementById('conn-label').textContent = labelText;
+        }
+        function setLastUpdate(tsUnix) {
+            const el = document.getElementById('last-update');
+            if (!tsUnix) { el.textContent = ''; return; }
+            el.textContent = 'Cập nhật: ' + new Date(tsUnix * 1000).toLocaleTimeString('vi-VN');
+        }
+
+        function closeStationMenu() {
+            document.getElementById('station-menu').classList.add('hidden');
+        }
+
+        function toggleStationMenu(ev) {
+            if (ev) ev.stopPropagation();
+            const menu = document.getElementById('station-menu');
+            if (!stations.length) return;
+            menu.classList.toggle('hidden');
+        }
+
+        function renderStationMenu() {
+            const menu = document.getElementById('station-menu');
+            menu.innerHTML = '';
+
+            stations.forEach((station) => {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'station-item' + (station.id === currentStationId ? ' active' : '');
+                btn.textContent = station.name + (station.is_active ? ' ★' : '');
+                btn.addEventListener('click', async function (e) {
+                    e.stopPropagation();
+                    await setCurrentStation(station.id, true);
+                    closeStationMenu();
+                });
+                menu.appendChild(btn);
+            });
+        }
+
+        async function setCurrentStation(stationId, syncActive) {
+            currentStationId = stationId;
+            const active = stations.find((s) => s.id === stationId);
+            document.getElementById('device-select').textContent = active ? active.name : 'Chọn trạm sạc...';
+
+            if (syncActive) {
+                await fetch(BASE + `/api/station/set-active/${stationId}`, { method: 'POST' });
+            }
+
+            renderStationMenu();
+            await refreshDashboard();
+        }
+
+        function resetLoadingState() {
+            const overlay = document.getElementById('loading-overlay');
+            if (!overlay) return;
+            overlay.classList.add('hidden');
+            overlay.classList.remove('show');
+            document.body.classList.remove('loading');
+            document.body.style.overflow = '';
+        }
+
+        window.addEventListener('load', resetLoadingState);
+        window.addEventListener('pageshow', resetLoadingState);
+
+        function showLoading(message) {
+            const overlay = document.getElementById('loading-overlay');
+            const text = document.getElementById('loading-text');
+            text.textContent = message || 'Đang xử lý...';
+            overlay.classList.remove('hidden');
+        }
+
+        function hideLoading() {
+            document.getElementById('loading-overlay').classList.add('hidden');
+        }
+
+        function withLoading(action, message, persist) {
+            showLoading(message);
+            window.setTimeout(function () {
+                try {
+                    action();
+                } finally {
+                    if (!persist) {
+                        window.setTimeout(hideLoading, 250);
+                    }
+                }
+            }, 120);
+        }
+
+        function toggleTheme() {
+            const next = document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+            document.body.setAttribute('data-theme', next);
+            try { localStorage.setItem('smartsac_theme', next); } catch (_) {}
+        }
+        (function () {
+            try {
+                const saved = localStorage.getItem('smartsac_theme');
+                if (saved === 'dark') document.body.setAttribute('data-theme', 'dark');
+            } catch (_) {}
+        }());
+
+        function normalizeStateKey(state) {
+            const raw = String(state || '').trim().toUpperCase();
+            if (!raw) return 'MAT_KET_NOI';
+
+            const compact = raw.replace(/\s+/g, '_');
+            const fullAliases = ['FULL', 'DAY', 'SAC_XONG', 'DONE', 'COMPLETED', 'HOAN_TAT', 'DA_DAY'];
+            if (fullAliases.includes(compact) || raw.includes('ĐẦY')) return 'FULL';
+
+            if (compact === 'DANG_DO' || compact === 'PROBING' || compact === 'DO') return 'DANG_DO';
+            if (compact === 'LOI_CAM_BIEN' || compact.includes('SENSOR_ERROR') || compact.includes('CAM_BIEN')) return 'LOI_CAM_BIEN';
+            if (compact === 'NGAT_NHIET' || compact.includes('STOP_TEMP') || compact.includes('QUA_NHIET') || compact.includes('NHIET')) return 'NGAT_NHIET';
+            if (compact === 'NGAT_DO_AM' || compact.includes('STOP_HUMID') || compact.includes('DO_AM') || compact.includes('HUMID')) return 'NGAT_DO_AM';
+            if (compact === 'NGAT_QUA_GIO' || compact.includes('STOP_TIMEOUT') || compact.includes('QUA_GIO') || compact.includes('TIMEOUT')) return 'NGAT_QUA_GIO';
+            if (compact === 'NGAT_QUA_CONG_SUAT' || compact.includes('STOP_POWER') || compact.includes('CONG_SUAT') || compact.includes('POWER')) return 'NGAT_QUA_CONG_SUAT';
+
+            if (compact.includes('LOI') || compact.includes('LỖI') || compact.includes('ERROR')) return 'LOI';
+            if (compact.includes('SAC_CHO') || compact.includes('SẠC_CHỜ')) return 'SAC_CHO';
+            if (compact.includes('DANG_SAC') || compact.includes('ĐANG_SẠC') || compact.includes('CHARGING')) return 'DANG_SAC';
+            if (compact.includes('DUNG') || compact.includes('DỪNG') || compact.includes('STOP')) return 'DUNG';
+            if (compact.includes('MAT_KET_NOI') || compact.includes('MẤT_KẾT_NỐI') || compact.includes('OFFLINE')) return 'MAT_KET_NOI';
+            if (compact.includes('SAN_SANG') || compact.includes('SẴN_SÀNG') || compact.includes('READY')) return 'SAN_SANG';
+
+            return compact;
+        }
+
+        function toDisplayStateLabel(stateKey) {
+            return STATE_LABELS_VI[stateKey] || stateKey.replaceAll('_', ' ');
+        }
+
+        function isFullState(state) {
+            return normalizeStateKey(state) === 'FULL';
+        }
+
+        function isErrorState(stateKey) {
+            return ['LOI', 'LOI_CAM_BIEN', 'NGAT_NHIET', 'NGAT_DO_AM', 'NGAT_QUA_GIO', 'NGAT_QUA_CONG_SUAT'].includes(stateKey);
+        }
+
+        function telemetryTimeoutByState(stateKey) {
+            if (['SAN_SANG', 'SAC_CHO', 'DUNG'].includes(stateKey)) {
+                return 180;
+            }
+            return 60;
+        }
+
+        function isTelemetryFresh(tsUnix, stateKey) {
+            const ts = Number(tsUnix || 0);
+            if (!ts || !Number.isFinite(ts)) {
+                return false;
+            }
+            const age = Math.max(0, Math.floor(Date.now() / 1000) - ts);
+            return age <= telemetryTimeoutByState(stateKey);
+        }
+
+        function resetDashboardDisplay(stateKey) {
+            document.getElementById('val-p').textContent = '0';
+            document.getElementById('val-v').textContent = '0';
+            document.getElementById('val-ds').textContent = '0';
+            document.getElementById('val-time').textContent = '0';
+            document.getElementById('val-est').textContent = '--';
+            document.getElementById('energy-caption').textContent = 'Điện đang sạc:';
+            document.getElementById('val-energy').textContent = '0.000';
+            document.getElementById('val-month-power').textContent = '0.0';
+            document.getElementById('val-month-energy').textContent = '0.000';
+            document.getElementById('val-ds-sensor').textContent = '0°C';
+            document.getElementById('val-mlx').textContent = '0°C';
+            document.getElementById('val-env').textContent = '--°C';
+            document.getElementById('val-hum').textContent = '0%';
+            document.getElementById('status-text').textContent = toDisplayStateLabel(stateKey || 'FULL');
+            document.getElementById('bar-ds').style.width = '0%';
+            document.getElementById('bar-mlx').style.width = '0%';
+            document.getElementById('bar-env').style.width = '0%';
+            document.getElementById('bar-hum').style.width = '0%';
+
+            const icon = document.getElementById('status-icon');
+            icon.className = 'fa-solid fa-circle-check status-big-icon';
+            icon.style.color = 'var(--success)';
+
+            if (mainChart) {
+                mainChart.data.datasets.forEach((dataset) => {
+                    dataset.data = Array(MAX_POINTS).fill(null);
+                });
+                mainChart.update('none');
+            }
+        }
+
+        function initChart() {
+            mainChart = new Chart(document.getElementById('mainChart').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: Array(MAX_POINTS).fill(''),
+                    datasets: [
+                        { label: 'Công suất (W)', data: Array(MAX_POINTS).fill(null), borderColor: '#4f46e5', fill: true, tension: 0.35, yAxisID: 'y' },
+                        { label: 'Nhiệt độ (°C)', data: Array(MAX_POINTS).fill(null), borderColor: '#ef4444', tension: 0.35, yAxisID: 'y1' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: { duration: 0 },
+                    scales: {
+                        x: { display: false },
+                        y: { beginAtZero: true },
+                        y1: { position: 'right', beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        async function loadStations() {
+            try {
+                const response = await fetch(BASE + `/api/config-ts?_=${Date.now()}`, { cache: 'no-store' });
+                const data = await response.json();
+                if (!response.ok || !Array.isArray(data.data)) {
+                    showToast('⚠️ Không tải được danh sách trạm: ' + (data.message || response.status), 'error', 6000);
+                    setConnBadge('offline', 'Lỗi tải trạm');
+                    return;
+                }
+
+                stations = data.data;
+                const selectText = document.getElementById('device-select');
+
+                if (stations.length === 0) {
+                    selectText.textContent = 'Chưa có trạm';
+                    document.getElementById('station-menu').innerHTML = '';
+                    setConnBadge('offline', 'Chưa có trạm');
+                    showToast('⚠️ Chưa có trạm sạc nào. Vào Quản Lý Trạm để tạo trạm trước.', 'warn', 8000);
+                    return;
+                }
+
+                const activeStation = stations.find((s) => s.is_active) || stations[0];
+                await setCurrentStation(activeStation.id, false);
+
+                if (!_stationMenuBound) {
+                    _stationMenuBound = true;
+                    document.addEventListener('click', function (e) {
+                        const group = document.querySelector('.device-selector-group');
+                        if (group && !group.contains(e.target)) {
+                            closeStationMenu();
+                        }
+                    });
+                }
+            } catch (error) {
+                showToast('❌ Lỗi mạng khi tải trạm: ' + error.message, 'error');
+                setConnBadge('offline', 'Lỗi mạng');
+                console.error('loadStations error:', error);
+            }
+        }
+
+        async function refreshDashboard() {
+            if (!currentStationId) {
+                setConnBadge('offline', 'Chưa chọn trạm');
+                setLastUpdate(null);
+                resetDashboardDisplay('MAT_KET_NOI');
+                return;
+            }
+
+            try {
+                const response = await fetch(BASE + `/api/dashboard/data?station_id=${currentStationId}&_=${Date.now()}`, { cache: 'no-store' });
+                const body = await response.json();
+
+                if (!response.ok || body.status !== 'success') {
+                    _consecutiveErrors++;
+                    const errMsg = body.message || ('HTTP ' + response.status);
+                    setConnBadge('offline', 'Lỗi API');
+                    setLastUpdate(null);
+                    resetDashboardDisplay('MAT_KET_NOI');
+                    if (_consecutiveErrors === 1 || _consecutiveErrors % 10 === 0) {
+                        showToast('⚠️ ' + errMsg, 'error');
+                    }
+                    console.warn('refreshDashboard error:', errMsg);
+                    return;
+                }
+
+                _consecutiveErrors = 0;
+                const data = body.data;
+                const stateKey = normalizeStateKey(data.state);
+                const telemetryFresh = isTelemetryFresh(data.ts, stateKey);
+
+                /* Badge kết nối */
+                if (!telemetryFresh) {
+                    setConnBadge('offline', 'Mất kết nối');
+                } else {
+                    setConnBadge('online', 'Trực tuyến');
+                }
+                setLastUpdate(data.ts || null);
+
+                document.getElementById('val-p').textContent   = data.p != null ? Number(data.p).toFixed(1)   : '0';
+                document.getElementById('val-v').textContent   = data.v != null ? Number(data.v).toFixed(1)   : '0';
+                document.getElementById('val-ds').textContent  = data.mlx != null ? Number(data.mlx).toFixed(1) : '0';
+                document.getElementById('val-time').textContent = data.charge_time_min || 0;
+                document.getElementById('val-est').textContent = (data.est ?? '--');
+                const chargingEnergy = Number(data.energy_session_kwh || 0);
+                const fullEnergy = Number(data.energy_last_full_kwh || 0);
+                const shownEnergy = stateKey === 'FULL' ? fullEnergy : chargingEnergy;
+                document.getElementById('energy-caption').textContent = stateKey === 'FULL' ? 'Điện đã sạc (đầy):' : 'Điện đang sạc:';
+                document.getElementById('val-energy').textContent = shownEnergy.toFixed(3);
+                document.getElementById('val-month-power').textContent = Number(data.monthly_avg_power_w || 0).toFixed(1);
+                document.getElementById('val-month-energy').textContent = Number(data.monthly_energy_kwh || 0).toFixed(3);
+                document.getElementById('val-ds-sensor').textContent = (data.ds != null ? Number(data.ds).toFixed(1) : '0') + '°C';
+                document.getElementById('val-mlx').textContent = (data.mlx != null ? Number(data.mlx).toFixed(1) : '0') + '°C';
+                const envTemp = (data.dht_t ?? data.env_t ?? null);
+                document.getElementById('val-env').textContent = envTemp != null ? (Number(envTemp).toFixed(1) + '°C') : '--°C';
+                document.getElementById('val-hum').textContent = (data.dht_h != null ? Number(data.dht_h).toFixed(0) : '0') + '%';
+                document.getElementById('status-text').textContent = toDisplayStateLabel(stateKey);
+
+                document.getElementById('bar-ds').style.width = Math.min(Number(data.ds || 0), 100) + '%';
+                document.getElementById('bar-mlx').style.width = Math.min(Number(data.mlx || 0), 100) + '%';
+                document.getElementById('bar-env').style.width = Math.min(Number(envTemp || 0), 100) + '%';
+                document.getElementById('bar-hum').style.width = Math.min(Number(data.dht_h || 0), 100) + '%';
+
+                const icon = document.getElementById('status-icon');
+                if (stateKey === 'DANG_SAC') {
+                    icon.className = 'fa-solid fa-bolt status-big-icon';
+                    icon.style.color = 'var(--success)';
+                } else if (stateKey === 'DANG_DO') {
+                    icon.className = 'fa-solid fa-gauge status-big-icon';
+                    icon.style.color = 'var(--info)';
+                } else if (isErrorState(stateKey)) {
+                    icon.className = 'fa-solid fa-triangle-exclamation status-big-icon';
+                    icon.style.color = 'var(--danger)';
+                } else if (stateKey === 'SAC_CHO') {
+                    icon.className = 'fa-solid fa-clock status-big-icon';
+                    icon.style.color = 'var(--warning)';
+                } else if (stateKey === 'DUNG') {
+                    icon.className = 'fa-solid fa-circle-stop status-big-icon';
+                    icon.style.color = 'var(--warning)';
+                } else if (stateKey === 'FULL') {
+                    icon.className = 'fa-solid fa-circle-check status-big-icon';
+                    icon.style.color = 'var(--success)';
+                } else if (stateKey === 'MAT_KET_NOI') {
+                    icon.className = 'fa-solid fa-plug-circle-xmark status-big-icon';
+                    icon.style.color = 'var(--text-light)';
+                } else {
+                    icon.className = 'fa-solid fa-circle-check status-big-icon';
+                    icon.style.color = 'var(--text-light)';
+                }
+
+                if (mainChart) {
+                    const wattSeries = mainChart.data.datasets[0].data;
+                    const tempSeries = mainChart.data.datasets[1].data;
+                    wattSeries.shift(); wattSeries.push(Number(data.p || 0));
+                    tempSeries.shift(); tempSeries.push(Number(data.ds || 0));
+                    mainChart.update('none');
+                }
+            } catch (error) {
+                _consecutiveErrors++;
+                if (_consecutiveErrors === 1 || _consecutiveErrors % 10 === 0) {
+                    showToast('❌ Lỗi mạng: ' + error.message, 'error');
+                }
+                setConnBadge('offline', 'Lỗi mạng');
+                setLastUpdate(null);
+                resetDashboardDisplay('MAT_KET_NOI');
+                console.error('refreshDashboard fetch error:', error);
+            }
+        }
+
+        async function sendCommand(command) {
+            if (!currentStationId) { showToast('⚠️ Vui lòng chọn trạm sạc!', 'warn'); return; }
+            showLoading('Đang gửi lệnh xuống trạm...');
+            try {
+                const response = await fetch(BASE + '/api/dashboard/command', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ station_id: currentStationId, command: command })
+                });
+                const data = await response.json();
+                hideLoading();
+                if (response.ok && data.status === 'success') {
+                    showToast('✅ ' + data.message, 'ok');
+                } else {
+                    showToast('❌ ' + (data.message || 'Gửi lệnh thất bại'), 'error');
+                }
+            } catch (error) {
+                hideLoading();
+                showToast('❌ Lỗi: ' + error.message, 'error');
+            }
+        }
+
+        async function analyzeAI() {
+            if (!currentStationId) { showToast('⚠️ Vui lòng chọn trạm sạc!', 'warn'); return; }
+
+            const box = document.getElementById('ai-msg');
+            box.textContent = 'Đang phân tích tình trạng hiện tại của trạm...';
+
+            const formData = new FormData();
+            formData.append('station_id', currentStationId);
+
+            try {
+                const response = await fetch(BASE + '/api/dashboard/ai-assistant', { method: 'POST', body: formData });
+                const data = await response.json();
+                if (response.ok && data.status === 'success') {
+                    const title = data.data.title || 'Đánh giá nhanh';
+                    const insight = data.data.insight || 'Không có nhận xét.';
+                    const level = data.data.level || 'info';
+                    const color = level === 'danger' ? 'var(--danger)' : (level === 'warning' ? 'var(--warning)' : 'var(--success)');
+                    box.innerHTML = `<b style="color:${color}">${title}</b><br>${insight}`;
+                } else {
+                    box.textContent = 'AI dashboard chưa trả kết quả. Vui lòng thử lại.';
+                }
+            } catch (error) {
+                box.textContent = 'Không thể gọi AI dashboard lúc này.';
+            }
+        }
+
+        let _refreshTimer = null;
+        async function pollDashboardLoop() {
+            await refreshDashboard();
+            _refreshTimer = setTimeout(pollDashboardLoop, 1500);
+        }
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            initChart();
+            await loadStations();
+            pollDashboardLoop();
+        });
+    </script>
+</body>
+</html>
