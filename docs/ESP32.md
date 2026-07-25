@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Tài Liệu Hướng Dẫn Chi Tiết Mã Nguồn ESP32 (Smart Charger)
 
 Tài liệu này mô tả chi tiết kiến trúc, các mô-đun chức năng, cơ chế vận hành, và cấu hình nâng cao trong phần mềm điều khiển trạm sạc thông minh chạy trên ESP32.
