@@ -2,9 +2,11 @@
 
 **SmartSac** là hệ thống giám sát và điều khiển trạm sạc xe điện thông minh, giải quyết các vấn đề an toàn phòng chống cháy nổ và tối ưu hóa chu trình sạc thông qua cảm biến thời gian thực, điều khiển từ xa và phân tích an toàn.
 
+🌐 **Website dự án:** [hetcuu.com/smartsac](https://hetcuu.com/smartsac/)
+
 > 📖 **Tài liệu chi tiết:**
-> * [Hướng dẫn chi tiết Mã nguồn ESP32](ESP32/ESP32_CODE_GUIDE.md)
-> * [Kiến trúc & Vận hành Hệ thống Server](Server/T%C3%80I_LI%E1%BB%86U_D%E1%BB%B0_%C3%81N.md)
+> * [Hướng dẫn chi tiết Mã nguồn ESP32](docs/ESP32.md)
+> * [Kiến trúc & Vận hành Hệ thống Server](docs/Server.md)
 > * [Tài liệu API Hệ thống](https://hetcuu.com/smartsac/tailieu_api)
 
 ---
@@ -68,7 +70,9 @@ Hệ thống kết hợp thiết bị IoT (ESP32), máy chủ lưu trữ (MySQL)
 
 ## ⚙️ Hướng Dẫn Cài Đặt
 
-> 💡 **Lưu ý:** Server là phần mở rộng để giám sát từ xa và lưu log. Thiết bị ESP32 hoàn toàn **không bắt buộc** phải kết nối server để hoạt động. Khi chạy độc lập (offline), ESP32 vẫn tự động đo đạc cảm biến, tự động ngắt relay bảo vệ quá nhiệt/quá tải cục bộ và hỗ trợ cấu hình qua Web Portal cục bộ hoặc nút nhấn vật lý.
+> 💡 **Lưu ý:** Máy chủ (Server) chỉ là tùy chọn mở rộng để lưu trữ dữ liệu lịch sử và giám sát từ xa. Người dùng hoàn toàn **không bắt buộc** phải thiết lập hay chạy Server. Thiết bị ESP32 có khả năng hoạt động độc lập và cho phép người dùng điều khiển, cấu hình đầy đủ bằng 2 cách khác:
+> 1. **WiFi cục bộ (Local Web Portal):** Kết nối trực tiếp vào mạng WiFi do ESP32 tự phát ra để truy cập giao diện cấu hình tại địa chỉ `192.168.4.1`.
+> 2. **Telegram Bot:** Điều khiển và cấu hình hệ thống từ xa thông qua chat bot Telegram (khi thiết bị kết nối với mạng WiFi có Internet).
 
 ### 1. Khởi chạy Server (Tùy chọn)
 
