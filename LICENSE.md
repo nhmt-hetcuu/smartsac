@@ -1,8 +1,8 @@
 # GIẤY PHÉP SỬ DỤNG MÃ NGUỒN (NON-COMMERCIAL & NON-COMPETITION LICENSE)
 
-Bản quyền (c) 2026 [Tên bạn / Nhóm tác giả SmartSAC - hetcuu.com]
-Dự án: SmartSAC (https://hetcuu.com/smartsac/)
-Repository: https://github.com/nhmt-hetcuu/smartsac
+Bản quyền (c) 2026 Nguyễn Hoàng Minh Trí
+<br>Dự án: SmartSAC (https://hetcuu.com/smartsac/)
+<br>Repository: https://github.com/nhmt-hetcuu/smartsac
 
 ---
 
