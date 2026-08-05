@@ -6,7 +6,7 @@
 
 > ⚠️ **LƯU Ý VỀ BẢN QUYỀN / LICENSE NOTICE**
 > 
-> **[VIE]** Mã nguồn dự án **SmartSAC** chỉ được phép sử dụng cho mục đích **học hỏi, nghiên cứu cá nhân**. **NGHIÊM CẤM** mọi hành vi thương mại hóa hoặc sử dụng mã nguồn/thiết kế này để tham gia các cuộc thi (KHKT, Tin học trẻ, v.v.). Quyền thi đấu và thương mại thuộc về Admin/Tác giả gốc. Chi tiết xem tại file [LICENSE](./LICENSE).
+> * Mã nguồn dự án **SmartSAC** chỉ được phép sử dụng cho mục đích **học hỏi, nghiên cứu cá nhân**. **NGHIÊM CẤM** mọi hành vi thương mại hóa hoặc sử dụng mã nguồn/thiết kế này để tham gia các cuộc thi (KHKT, Tin học trẻ, v.v.). Quyền thi đấu và thương mại thuộc về Admin/Tác giả gốc. Chi tiết xem tại file [LICENSE](./LICENSE).
 
 > 📖 **Tài liệu chi tiết:**
 > * [Hướng dẫn chi tiết Mã nguồn ESP32](docs/ESP32.md)
